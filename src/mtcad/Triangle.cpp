@@ -11,6 +11,7 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include "mtcad/materials.hpp"
 #include <mtcad/Node.hpp>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
@@ -18,13 +19,17 @@
 #include <stdexcept>
 #include <vector>
 
+
+const mt_cad::Materials_t mt_cad::Triangle::material = TRIANGLE;
+const int mt_cad::Triangle::max_nodes = 3;
+
 mt_cad::Triangle::Triangle(std::vector<mt_cad::Node> nodes){
     if (nodes.size()>=this->max_nodes){
         int x0,y0,x1,y1,x2,y2;
         nodes.at(0).get_coords(x0,y0);
         nodes.at(1).get_coords(x1,y1);
         nodes.at(2).get_coords(x2,y2);
-        mt_cad::Node central = mt_cad::Node(x0+10,y0-10 ,XY);
+        mt_cad::Node central = mt_cad::Node(((x0+x1+x2)/3), ((y0+y1+y2)/3),XY);
         this->nodes = {central,nodes.at(0),nodes.at(1),nodes.at(2)};
     }else{
         throw std::length_error("Too many nodes for a curve");
@@ -52,7 +57,10 @@ void mt_cad::Triangle::set_points(std::vector<mt_cad::Node> nodes){
         nodes.at(1).get_coords(x0,y0);
         nodes.at(2).get_coords(x1,y1);
         nodes.at(3).get_coords(x2,y2);
-        mt_cad::Node central = mt_cad::Node(x0+10,y0-10 ,XY);
+       
+        
+
+        mt_cad::Node central = mt_cad::Node(((x0+x1+x2)/3), ((y0+y1+y2)/3),XY);
         this->nodes = {central,nodes.at(1),nodes.at(2),nodes.at(3)};
     }else{
         throw std::length_error("Too many nodes for a curve");

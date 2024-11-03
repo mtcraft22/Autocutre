@@ -20,13 +20,6 @@
 #include <mtcad/Shape.hpp>
 #include <mtcad/Triangle.hpp>
 
-const std::string mt_cad::Circle::material = "circle";
-const int mt_cad::Circle::max_nodes = 2;
-const std::string mt_cad::Curve::material = "curve";
-const int mt_cad::Curve::max_nodes = 3;
-const std::string mt_cad::Line::material = "line";
-const int mt_cad::Line::max_nodes = 2;
-const std::string mt_cad::Rectangle::material = "rectangle";
-const int mt_cad::Rectangle::max_nodes = 2;
-const std::string mt_cad::Triangle::material = "triangle";
-const int mt_cad::Triangle::max_nodes = 3;
+
+
+

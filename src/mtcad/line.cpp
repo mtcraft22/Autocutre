@@ -11,11 +11,15 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include "mtcad/materials.hpp"
 #include <SDL2/SDL_render.h>
 #include <mtcad/Node.hpp>
 #include <mtcad/line.hpp>
 #include <stdexcept>
 #include <vector>
+
+const mt_cad::Materials_t mt_cad::Line::material = LINE;
+const int mt_cad::Line::max_nodes = 2;
 mt_cad::Line::Line(std::vector<mt_cad::Node> nodes){
     if (nodes.size() >= this->max_nodes){
         int x0,y0,x1,y1;

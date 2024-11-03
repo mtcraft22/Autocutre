@@ -9,6 +9,9 @@ add_library(${PROJECT_NAME} SHARED
     ${PROJECT_SOURCE_DIR}/circle.cpp
     ${PROJECT_SOURCE_DIR}/Node.cpp
     ${PROJECT_SOURCE_DIR}/line.cpp
+    ${PROJECT_SOURCE_DIR}/ellipse.cpp
+    ${PROJECT_SOURCE_DIR}/quadratic_curve.cpp
+
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include)
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2 )

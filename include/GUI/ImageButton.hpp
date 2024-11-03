@@ -14,7 +14,9 @@ namespace GUI {
                 SDL_Color color, 
                 SDL_Color colortext, 
                 std::string text, 
-                SDL_Event *e
+                SDL_Event *e,
+				int gapy = 0,
+				int gapx = 0
             );
             
             void render(SDL_Renderer* ctx);

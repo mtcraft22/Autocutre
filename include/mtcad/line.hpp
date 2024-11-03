@@ -13,6 +13,7 @@
 */
 #pragma once
 
+#include "mtcad/materials.hpp"
 #include <mtcad/Shape.hpp>
 #include <mtcad/Node.hpp>
 #include <SDL2/SDL_render.h>
@@ -26,6 +27,6 @@ namespace mt_cad {
             std::vector<mt_cad::Node> get_points() ;
             void set_points(std::vector<mt_cad::Node> nodes) ;
             static const int max_nodes;
-            static const std::string material;
+            static const mt_cad::Materials_t material;
     };
 }

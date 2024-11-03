@@ -15,8 +15,8 @@ namespace GUI {
 			int w,h;
 			int gapX, gapY;
 			SDL_Rect* box;
-			SDL_Color color;
-			SDL_Color colortext;
+			SDL_Color bg;
+			SDL_Color fg;
 			bool pressed, hover;
 			std::string text;
 			int x, y;

@@ -12,6 +12,7 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 #pragma once
+#include "mtcad/materials.hpp"
 #include <mtcad/Node.hpp>
 #include <mtcad/Shape.hpp>
 #include <vector>
@@ -24,7 +25,7 @@ namespace mt_cad {
             std::vector<mt_cad::Node> get_points() ;
             void set_points(std::vector<mt_cad::Node> nodes) ;
             static const int max_nodes;
-            static const std::string material;
+            static const mt_cad::Materials_t material;
         private:
             bool triPoint(float x1, float y1, float x2, float y2, float x3, float y3,
             float px, float py);

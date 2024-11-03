@@ -16,6 +16,7 @@
 #include <mtcad/Node.hpp>
 #include <string>
 #include <vector>
+#include <mtcad/materials.hpp>
 #pragma once
 namespace mt_cad {
     class Curve: public mt_cad::Shape {
@@ -28,7 +29,7 @@ namespace mt_cad {
             std::vector<mt_cad::Node> get_points() ;
             void set_points(std::vector<mt_cad::Node> nodes) ;
             static const int max_nodes;
-            static const std::string material;
+            static const mt_cad::Materials_t material;
         private:
             
             bool triPoint(float x1, float y1, float x2, float y2, float x3, float y3,

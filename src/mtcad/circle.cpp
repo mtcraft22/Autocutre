@@ -11,6 +11,7 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include "mtcad/materials.hpp"
 #include <SDL2/SDL.h>
 #include <mtcad/circle.hpp>
 #include <cmath>
@@ -21,14 +22,15 @@
 #include <stdexcept>
 #include <vector>
 
-
+const mt_cad::Materials_t mt_cad::Circle::material = mt_cad::CIRCLE;
+const int mt_cad::Circle::max_nodes = 2;
 mt_cad::Circle::Circle(std::vector<Node> nodes){
 
     if (nodes.size()>=this->max_nodes){
         int x,y;
         nodes.at(0).get_coords(x, y);
 
-        this->nodes = {nodes.at(0),nodes.at(1)};
+        this->nodes = nodes;
     }else{
         throw std::length_error("Too few nodes for a circle");
     }
@@ -41,7 +43,7 @@ void mt_cad::Circle::set_points(std::vector<mt_cad::Node> nodes) {
         int x,y;
         nodes.at(0).get_coords(x, y);
        
-        this->nodes = {nodes.at(0),nodes.at(1)};
+        this->nodes = nodes;
     }else{
     SDL_Point prev = {0,0};
         throw std::length_error("Too few nodes for a circle");
@@ -61,7 +63,7 @@ void mt_cad::Circle::draw(SDL_Renderer *ctx)
     
     prev.x = cos(0)*radius+x1;
     prev.y = sin(0)*radius+y1;
-    for (int i = 1 ; i<= 360; i++){
+    for (int i = 1 ; i<= 360; i+=1){
       
         SDL_RenderDrawLine(ctx, prev.x, prev.y, cos(((float)i/180)*3.1416)*radius+x1,sin(((float)i/180)*3.1416)*radius+y1);
 
