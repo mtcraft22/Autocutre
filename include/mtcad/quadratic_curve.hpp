@@ -10,5 +10,6 @@ namespace mt_cad {
             static const mt_cad::Materials_t material;
             Quadratic_curve(std::vector<mt_cad::Node> nodes):mt_cad::Curve(nodes){}
             void draw(SDL_Renderer *ctx) override;
+            bool hover(int x, int y) override;
     };
 };

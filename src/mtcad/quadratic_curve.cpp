@@ -1,9 +1,10 @@
 #include "mtcad/materials.hpp"
 #include <mtcad/quadratic_curve.hpp>
+#include <vector>
 const int mt_cad::Quadratic_curve::max_nodes = 4;
 const mt_cad::Materials_t mt_cad::Quadratic_curve::material = QUADRATIC;
 void mt_cad::Quadratic_curve::draw(SDL_Renderer* ctx){
-    int x0,y0,x1,y1,x2,y2,x3,y3;
+    float x0,y0,x1,y1,x2,y2,x3,y3;
     this->nodes.at(1).get_coords(x0,y0);
     this->nodes.at(2).get_coords(x1,y1);
     this->nodes.at(3).get_coords(x2,y2);
@@ -17,4 +18,16 @@ void mt_cad::Quadratic_curve::draw(SDL_Renderer* ctx){
         px = x;
         py = y;
     } 
+}
+bool mt_cad::Quadratic_curve::hover(int x, int y){
+    float x0,y0,x1,y1,x2,y2,x3,y3;
+    this->nodes.at(1).get_coords(x0,y0);
+    this->nodes.at(2).get_coords(x1,y1);
+    this->nodes.at(3).get_coords(x2,y2);
+    this->nodes.at(4).get_coords(x3,y3);
+    
+    return triPoint(x0, y0, x1, y1, x2, y2, x, y) || 
+    triPoint(x1, y1, x2, y2, x3, y3, x, y);
+
+    
 }

@@ -17,15 +17,18 @@ typedef enum rectitions {XY,X,Y} Restictions ;
 namespace mt_cad{
 	class Node{
 		public:
-			Node(int x, int y, Restictions res);
+			Node(float x, float y, Restictions res);
 			void draw(SDL_Renderer *ctx);
-			void get_coords(int &x, int &y);
-			void set_coords(int x,int y);
+			void get_coords(float &x, float &y);
+			void set_coords(float x,float y);
 			Restictions get_canmove();
 			void set_canmove(Restictions canmove);
-			bool hover(int x, int y);
+			bool hover(float x, float y);
+			void set_angle(float angle);
+            float get_angle();
 		private:
 			Restictions canmove;
-			int x,y;
+			float x,y;
+			float angle;
 		};
 }

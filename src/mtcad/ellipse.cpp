@@ -10,7 +10,7 @@ const int mt_cad::Ellipse::max_nodes = 3;
 
 mt_cad::Ellipse::Ellipse(std::vector<mt_cad::Node> nodes):mt_cad::Circle(nodes){
      if (nodes.size()>=this->max_nodes){
-        int x,y;
+        float x,y;
         nodes.at(0).get_coords(x, y);
 
         this->nodes = {nodes.at(0),nodes.at(1),nodes.at(2)};
@@ -20,7 +20,7 @@ mt_cad::Ellipse::Ellipse(std::vector<mt_cad::Node> nodes):mt_cad::Circle(nodes){
 };
 void mt_cad::Ellipse::draw(SDL_Renderer *ctx)
 {
-    int x1,y1,x2,y2,x3,y3 = 0;
+    float x1,y1,x2,y2,x3,y3 = 0;
 
     this->nodes.at(0).get_coords(x1,y1);
     this->nodes.at(1).get_coords(x2,y2);
@@ -39,7 +39,7 @@ void mt_cad::Ellipse::draw(SDL_Renderer *ctx)
     prev.y = sin(0)*radius2+y1;
     for (int i = 1 ; i<= 360; i+=1){
       
-        SDL_RenderDrawLine(ctx, prev.x, prev.y, cos(((float)i/180)*3.1416)*radius+x1,sin(((float)i/180)*3.1416)*radius2+y1);
+        SDL_RenderDrawLineF(ctx, prev.x, prev.y, cos(((float)i/180)*3.1416)*radius+x1,sin(((float)i/180)*3.1416)*radius2+y1);
 
         prev.x = cos(((float)i/180)*3.1416)*radius+x1;
         prev.y = sin(((float)i/180)*3.1416)*radius2+y1;
@@ -47,7 +47,7 @@ void mt_cad::Ellipse::draw(SDL_Renderer *ctx)
    
 }
 bool mt_cad::Ellipse::hover(int x , int y){
-    int x1,y1,x2,y2,x3,y3 = 0;
+    float x1,y1,x2,y2,x3,y3 = 0;
     this->nodes.at(0).get_coords(x1,y1);
     this->nodes.at(1).get_coords(x2,y2);
     this->nodes.at(2).get_coords(x3,y3);

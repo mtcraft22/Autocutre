@@ -37,7 +37,7 @@ const int mt_cad::Curve::max_nodes = 3;
 mt_cad::Curve::Curve(std::vector<mt_cad::Node> points  ){
 
     if (points.size()>=this->max_nodes){
-        int x0,y0,x1,y1,x2,y2;
+        float x0,y0,x1,y1,x2,y2;
         points.at(0).get_coords(x0,y0);
         points.at(1).get_coords(x1,y1);
         points.at(2).get_coords(x2,y2);
@@ -53,13 +53,19 @@ mt_cad::Curve::Curve(std::vector<mt_cad::Node> points  ){
 std::vector<mt_cad::Node> mt_cad::Curve::get_points(){
     return this->nodes;
 }
-void mt_cad::Curve::set_points(std::vector<mt_cad::Node> nodes){
+void mt_cad::Curve::set_points(std::vector<mt_cad::Node> nodes, bool make_center){
     if (nodes.size()>=this->max_nodes){
-        int x0,y0,x1,y1,x2,y2;
+        float x0,y0,x1,y1,x2,y2;
         nodes.at(1).get_coords(x0,y0);
         nodes.at(2).get_coords(x1,y1);
         nodes.at(3).get_coords(x2,y2);
-        mt_cad::Node central = mt_cad::Node(((x0+x1+x2)/3), ((y0+y1+y2)/3),XY);
+        mt_cad::Node central = mt_cad::Node(0,0,XY);
+        if (make_center){
+             central = mt_cad::Node(((x0+x1+x2)/3), ((y0+y1+y2)/3),XY);
+        }else {
+            central = nodes.at(0);
+        }
+        
         
         this->nodes.at(0) = {central};
         for (int i = 1; i < nodes.size(); i++){
@@ -70,7 +76,7 @@ void mt_cad::Curve::set_points(std::vector<mt_cad::Node> nodes){
     }
 }
 void mt_cad::Curve::draw (SDL_Renderer * ctx){
-    int x0,y0,x1,y1,x2,y2;
+    float x0,y0,x1,y1,x2,y2;
 	this->nodes.at(1).get_coords(x0,y0);
 	this->nodes.at(2).get_coords(x1,y1);
 	this->nodes.at(3).get_coords(x2,y2);
@@ -105,7 +111,7 @@ bool mt_cad::Curve::triPoint(float x1, float y1, float x2, float y2, float x3, f
   return false;
 }
 bool mt_cad::Curve::hover(int x, int y){
-	int x0,y0,x1,y1,x2,y2;
+	float x0,y0,x1,y1,x2,y2;
 	this->nodes.at(1).get_coords(x0,y0);
 	this->nodes.at(2).get_coords(x1,y1);
 	this->nodes.at(3).get_coords(x2,y2);

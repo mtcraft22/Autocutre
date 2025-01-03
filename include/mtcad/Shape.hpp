@@ -12,9 +12,10 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 #pragma once
+#include "mtcad/Node.hpp"
 #include <SDL2/SDL_render.h>
 #include <vector>
-#include <string>
+
 namespace mt_cad {
     class Node;
     class Shape{
@@ -22,8 +23,13 @@ namespace mt_cad {
             virtual void draw(SDL_Renderer * ctx) = 0;
             virtual bool hover(int x , int y) = 0;
             virtual std::vector<mt_cad::Node> get_points() = 0;
-            virtual void set_points(std::vector<mt_cad::Node> nodes) = 0;
+            virtual void set_points(std::vector<mt_cad::Node> nodes, bool make_center) = 0;
+            void rotate (int ang , mt_cad::Node axis );
+            void rotate(int ang);
+            void move(mt_cad::Node axis);
         protected:
             std::vector<mt_cad::Node> nodes;
+            
+            
     };
 } 

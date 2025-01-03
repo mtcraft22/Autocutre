@@ -17,8 +17,6 @@
 #include <cmath>
 #include <cstdlib>
 #include <mtcad/Node.hpp>
-#include <iostream>
-#include <ostream>
 #include <stdexcept>
 #include <vector>
 
@@ -27,7 +25,8 @@ const int mt_cad::Circle::max_nodes = 2;
 mt_cad::Circle::Circle(std::vector<Node> nodes){
 
     if (nodes.size()>=this->max_nodes){
-        int x,y;
+        float x;
+        float y;
         nodes.at(0).get_coords(x, y);
 
         this->nodes = nodes;
@@ -38,10 +37,10 @@ mt_cad::Circle::Circle(std::vector<Node> nodes){
 std::vector<mt_cad::Node> mt_cad::Circle::get_points() {
 	return this->nodes;
 }
-void mt_cad::Circle::set_points(std::vector<mt_cad::Node> nodes) {
+void mt_cad::Circle::set_points(std::vector<mt_cad::Node> nodes, bool make_center) {
 	if (nodes.size()>=this->max_nodes){
-        int x,y;
-        nodes.at(0).get_coords(x, y);
+        float x,y;
+        nodes.at(0).get_coords(x,y);
        
         this->nodes = nodes;
     }else{
@@ -51,7 +50,7 @@ void mt_cad::Circle::set_points(std::vector<mt_cad::Node> nodes) {
 }
 void mt_cad::Circle::draw(SDL_Renderer *ctx)
 {
-    int x1,y1,x2,y2 = 0;
+    float x1,y1,x2,y2;
 
     this->nodes.at(0).get_coords(x1,y1);
     this->nodes.at(1).get_coords(x2,y2);
@@ -74,7 +73,7 @@ void mt_cad::Circle::draw(SDL_Renderer *ctx)
 }
 
 bool mt_cad::Circle::hover(int x , int y){
-    int x1,y1,x2,y2 = 0;
+    float x1,y1,x2,y2 = 0;
     this->nodes.at(0).get_coords(x1,y1);
     this->nodes.at(1).get_coords(x2,y2);
 

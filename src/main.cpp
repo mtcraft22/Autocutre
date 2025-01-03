@@ -46,7 +46,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-
+using namespace std;
 int gridsize = 20 ;
 const int ticksframe = 1000/60;
 int canvas_y_coord = 0;
@@ -96,8 +96,11 @@ void render_grid(int sw,int sh,SDL_Texture *  canvas){
         }
         SDL_UnlockTexture(canvas);
     }
+
 int main(int argc, char **argv){
-    
+    float scale = 1.0;
+    int canvas_h = 500*scale; 
+    int canvas_w = 500*scale;
     if(SDL_Init(SDL_INIT_EVERYTHING)<0){
         std::cout << SDL_GetError() << std::endl;
         return -1;
@@ -132,7 +135,7 @@ int main(int argc, char **argv){
 	SDL_Texture* elipsetext =  IMG_LoadTexture(ctx,path.c_str());
     path = std::string(SDL_GetBasePath()) + "res/buttons/quadratic_curve.png";
 	SDL_Texture* quadratictext =  IMG_LoadTexture(ctx,path.c_str());
-    std::cout << path << std::endl;
+    
 
 
 
@@ -155,14 +158,14 @@ int main(int argc, char **argv){
     SDL_UnlockTexture(gui);
    
     
-    std::vector<mt_cad::Node> nodes5 = {{500,500+ideal,XY},{540,500+ideal,XY},{500,540+ideal,XY}};
+   std::vector<mt_cad::Node> nodes5 = {{500.0,static_cast<float>(500.0+ideal),XY},{540.0,static_cast<float>(500.0+ideal),XY},{500.0,static_cast<float>(540.0+ideal),XY}};
     mt_cad::Ellipse *tri5 = new mt_cad::Ellipse(  nodes5  );
     
     //mt_cad::Curve Curv = mt_cad::Curve(  nodes  );
     int end,start = SDL_GetTicks(); 
     double delta = 0.0;
     bool run = true;
-
+    bool press = false;
     std::vector<mt_cad::Shape *> shapes;
 
     shapes.push_back(tri5);
@@ -209,6 +212,7 @@ int main(int argc, char **argv){
     mt_cad::Materials_t mat7 = mt_cad::QUADRATIC;
     quadraticbuton.set_click_callback(click, &mat7);
     std::vector<mt_cad::Node> nodes_new_shape;
+    int offx , offy;
 	while (run) {
         
         start = SDL_GetTicks();
@@ -223,17 +227,21 @@ int main(int argc, char **argv){
             psh = sh;
             SDL_GetWindowSize(window, &sw, &sh);
             
-            SDL_Rect  dest = {0,0,sw,sh};
+            SDL_Rect  dest = {gridsize*(offx/gridsize),gridsize*(offy/gridsize),sw,sh};
             SDL_RenderCopy(ctx, canvas, NULL, &dest);
 
            
             
-    
-            for ( int i = 0; i < shapes.size(); i++ ){
-                
-                shapes.at(i)->draw(ctx);
+            if (shapes.size() > 0){
+                for ( int i = 0; i < shapes.size(); i++ ){
+                   
+
+                    shapes.at(i)->draw(ctx);
+                }
             }
-            for (int i = 0; i< shapes.at(sel)->get_points().size(); i++){
+            
+            if (sel >= 0){
+                for (int i = 0; i< shapes.at(sel)->get_points().size(); i++){
                 SDL_SetRenderDrawColor(ctx, 255, 0, 0,255);
                 shapes.at(sel)->get_points().at(i).draw(ctx);
                 if(draggin && shapes.at(sel)->get_points().at(i).hover(mx, my) ){
@@ -241,8 +249,11 @@ int main(int argc, char **argv){
                     shapes.at(sel)->get_points().at(i).set_coords(gridsize*(mx/gridsize), gridsize*(my/gridsize));
                 }
                 SDL_SetRenderDrawColor(ctx,255, 255, 255, 255);
+                }
+                SDL_SetRenderDrawColor(ctx,255, 0, 0, 255);
             }
-            SDL_SetRenderDrawColor(ctx,255, 0, 0, 255);
+           
+           
             //Curv.draw(ctx);
             
             while (SDL_PollEvent(&e)) {
@@ -276,14 +287,14 @@ int main(int argc, char **argv){
                         for ( int i = 0; i < shapes.size(); i++ ){
                            for (int i2 = 0; i2< shapes.at(i)->get_points().size(); i2++){
                                     std::vector<mt_cad::Node> nodes = shapes.at(i)->get_points();
-                                    int x,y ;
+                                    float x,y ;
                                     Restictions res =  nodes.at(i2).get_canmove();
                                     nodes.at(i2).set_canmove(XY);
                                     nodes.at(i2).get_coords(x, y);
                                     
                                     nodes.at(i2).set_coords(x,y + (ideal-pideal));
                                     nodes.at(i2).set_canmove(res);
-                                    shapes.at(i)->set_points( nodes);
+                                    shapes.at(i)->set_points( nodes,true);
                                 }
                             }
                         
@@ -292,15 +303,111 @@ int main(int argc, char **argv){
                     
                 }
                 if (e.type == SDL_KEYDOWN){
-                    if (e.key.keysym.sym == SDLK_ESCAPE){
-                        for (auto b: butons) {
-                            b->setGap(0,0);
-                        }
-                        creating = false;
-                        button_hit  = false;
+                    std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                    switch (e.key.keysym.sym ) {
+                        case SDLK_LEFT:
+                            
+                            sel  ++;
+                            
+                            if (sel > (shapes.size() -1)){sel = 0 ;}
+                            break;
+                        case SDLK_RIGHT:
+                            sel --;
+                            if (sel < 0){sel = shapes.size()-1 ;}
+                            break;
+                        case SDLK_ESCAPE :
+                            for (auto b: butons) {
+                                b->setGap(0,0);
+                            }
+                            creating = false;
+                            button_hit  = false;
+                            break;
+                        case SDLK_DELETE:
+                            if (sel >= 0){
+                                delete shapes.at(sel);
+                                shapes.erase(shapes.begin() + sel);
+                                sel = -1;
+                            
+                            }
+                            break;
+                        case SDLK_e:
+                            if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
+                                    break;
+                                }
+                            
+                            for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+                                float px,py;
+                                float cx,cy;
+                                nodes.at(0).get_coords(cx, cy);
+                                nodes.at(i).get_coords(px, py);
+                                
+                                double radius = sqrtf (abs(abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
+                                float dy = py - cy;
+                                float dx = px - cx;
+                                double theta = atan2(dy,dx);
+                                theta *= 180/3.1416;
+                                if (theta < 0) theta = 360 + theta;
+                                nodes.at(i).set_angle(theta+ 1);
+                                px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
+                                py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
+                                nodes.at(i).set_coords(px, py);
+                                
+                            }
+                            shapes.at(sel)->set_points(nodes,true);
+                            break;
+                        case SDLK_q:
+                            
+                            
+                            for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+                                if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
+                                    continue;
+                                }
+                                float px,py;
+                                float cx,cy;
+                                nodes.at(0).get_coords(cx, cy);
+                                nodes.at(i).get_coords(px, py);
+                                
+                                double radius = sqrtf ((abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
+                                float dy = py - cy;
+                                float dx = px - cx;
+                                double theta = atan2(dy,dx);
+                                theta *= 180/3.1416;
+                                if (theta < 0) theta = 360 + theta;
+                                cout << radius << endl;
+                                nodes.at(i).set_angle(theta- 1);
+                                px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
+                                py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
+                                
+                                nodes.at(i).set_coords(px, py);
+                                
+                            }
+                            shapes.at(sel)->set_points(nodes,true);
+                            break;
+                            
                     }
+                    
+                    
+                }
+                if (e.type == SDL_MOUSEWHEEL){
+                   // int pmx = mx ;
+                    //int pmy = my ;
+                    if (e.wheel.y > 0){
+                        scale *= 1.5;
+                        
+                    
+                    }
+                    if (e.wheel.y < 0){
+                        scale *= 0.5;
+                        
+                        
+                    }
+                    
+                  
+                    
                 }
                 if(e.type == SDL_MOUSEBUTTONDOWN){
+                  
+                    press = true;
                     if (creating){
                         
                         
@@ -310,8 +417,8 @@ int main(int argc, char **argv){
                                 
                                 if (nodes_new_shape.size() < mt_cad::Line::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -329,8 +436,8 @@ int main(int argc, char **argv){
                             case mt_cad::CURVE:
                                 if (nodes_new_shape.size() < mt_cad::Curve::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -348,8 +455,8 @@ int main(int argc, char **argv){
                             case mt_cad::QUADRATIC:
                                 if (nodes_new_shape.size() < mt_cad::Quadratic_curve::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -367,8 +474,8 @@ int main(int argc, char **argv){
                             case mt_cad::CIRCLE:
                                 if (nodes_new_shape.size() < mt_cad::Circle::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -386,8 +493,8 @@ int main(int argc, char **argv){
                             case mt_cad::TRIANGLE:
                                 if (nodes_new_shape.size() < mt_cad::Triangle::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -406,8 +513,8 @@ int main(int argc, char **argv){
                             case mt_cad::RECTANGLE:
                                 if (nodes_new_shape.size() < mt_cad::Rectangle::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -425,8 +532,8 @@ int main(int argc, char **argv){
                             case mt_cad::ELLIPSE:
                                 if (nodes_new_shape.size() < mt_cad::Ellipse::max_nodes){
                                     if(!button_hit){
-                                        std::cout << mx << " " << my << std::endl;
-                                        nodes_new_shape.push_back({mx,my,XY});
+                                        
+                                        nodes_new_shape.push_back({(float)mx,(float)my,XY});
                                     }
                                     button_hit = false;
                                    
@@ -445,84 +552,115 @@ int main(int argc, char **argv){
                         
                     }
                     if(!draggin){
-                        std::vector<int> hover_shapes;
-                        for ( int x = 0; x < shapes.size(); x++ ){
-                            if (shapes.at(x)->hover(mx, my)){
-                                hover_shapes.push_back(x);
-                                sel = x;
-
-                            }
-                        }
-                        mt_cad::Node central = shapes.at(0)->get_points()[0];
-                        int cx,cy;
-                        central.get_coords(cx, cy);
-                        float distmin = (abs(cx-mx)  *  abs(cx-mx)) + (abs(cy-my)  *  abs(cy-my));
-                        for (int h : hover_shapes){
-                            for (auto central : shapes.at(h)->get_points()) {
-                                float dist;
-                          
-                                int cx,cy;
-                                central.get_coords(cx, cy);
-
-                                dist = sqrt((abs(cx-mx)  *  abs(cx-mx)) + (abs(cy-my)  *  abs(cy-my)));
-                                if (dist < distmin){
-                                    distmin = dist;
-                                    sel = h;
+                        if (sel >= 0){
+                            for (mt_cad::Node n : shapes.at(sel)->get_points()){
+                                if (!n.hover(mx, my)){
+                                    sel = -1;
                                 }
                             }
-                            
-
                         }
+                        std::vector<int> hover_shapes;
+                        if (shapes.size()> 0){
+                            for ( int x = 0; x < shapes.size(); x++ ){
+                                if (shapes.at(x)->hover(mx, my)){
+                                    hover_shapes.push_back(x);
+                                    sel = x;
+
+                                }
+                            }
+                            mt_cad::Node central = shapes.at(0)->get_points()[0];
+                            float cx,cy;
+                            central.get_coords(cx, cy);
+                            float distmin = (abs(cx-mx)  *  abs(cx-mx)) + (abs(cy-my)  *  abs(cy-my));
+                            for (int h : hover_shapes){
+                                for (auto central : shapes.at(h)->get_points()) {
+                                    float dist;
+                            
+                                    float cx,cy;
+                                    central.get_coords(cx, cy);
+
+                                    dist = sqrt((abs(cx-mx)  *  abs(cx-mx)) + (abs(cy-my)  *  abs(cy-my)));
+                                    if (dist < distmin){
+                                        distmin = dist;
+                                        sel = h;
+                                    }
+                                }
+                                
+
+                            }
+                        }
+                      
+                        
                         
                         
                     }
-                    draggin = true;
+                  
                 }
                 if(e.type == SDL_MOUSEBUTTONUP){
+                    press = false;
                     draggin = false;
                     innode = false;
                      
                 }
                 if(e.type == SDL_MOUSEMOTION){
-                 
+                    if(press){  draggin = true;press = false;}
+                
                     mx = e.motion.x;
                     my = e.motion.y;
                     
                     if (draggin ){
-                        if (!innode){
+                        if (sel < 0){
+                        
+                           offy += e.motion.yrel;
+                           offx += e.motion.xrel;
+                            if(draggin){
+                                for ( int i = 0; i < shapes.size(); i++ ){
+                                    vector<mt_cad::Node> points;
+
+                                    for (mt_cad::Node n :shapes.at(i)->get_points()){
+                                        float x,y;
+                                        n.get_coords(x, y);
+                                        points.push_back({x+e.motion.xrel,y+e.motion.yrel,n.get_canmove()});
+                                    } 
+                                    shapes.at(i)->set_points(points, false);
+                                }
+                            }
+                  
+                        }
+                        if (!innode && sel >= 0){
                             for (int i = 0; i< shapes.at(sel)->get_points().size(); i++){
                                 if(draggin && shapes.at(sel)->get_points().at(i).hover(mx, my) ){
                                     std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
                                     nodes.at(i).set_coords(gridsize * (std::trunc(mx/gridsize)),(gridsize * (std::trunc(my/gridsize))));
-                                    shapes.at(sel)->set_points( nodes);
+                                    shapes.at(sel)->set_points( nodes, true);
                                     selnode = i;
                                     innode = true;
                                     if (i == 0){
                                         for (int i = 1; i< shapes.at(sel)->get_points().size(); i++){
                                             std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
-                                            int x,y ;
+                                            float x,y ;
                                             nodes.at(i).get_coords(x, y);
                                             
                                             nodes.at(i).set_coords(x + e.motion.xrel,y + e.motion.yrel);
-                                            shapes.at(sel)->set_points( nodes);
+                                            shapes.at(sel)->set_points( nodes, true);
                                             
                                         }
                                     }
                                     break;
                             }
                         }
-                        }else if (draggin) {
+                        }else if (draggin && sel >= 0) {
                             std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
                             nodes.at(selnode).set_coords(gridsize * (std::trunc(mx/gridsize)),(gridsize * (std::trunc(my/gridsize))));
 
-                            shapes.at(sel)->set_points( nodes);
+                            shapes.at(sel)->set_points( nodes,true);
                                 if (selnode == 0){
                                     for (int i = 1; i< shapes.at(sel)->get_points().size(); i++){
                                         std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
-                                        int x,y ;
+                                        float x,y ;
                                         nodes.at(i).get_coords(x, y);
                                         nodes.at(i).set_coords(x + e.motion.xrel,y + e.motion.yrel);
-                                        shapes.at(sel)->set_points( nodes);
+                                        shapes.at(sel)->set_points( nodes,true);
                                     }
                                 }
                         }
