@@ -43,12 +43,12 @@ void mt_cad::Node::set_coords(float x, float y){
 
 }
 void mt_cad::Node::draw(SDL_Renderer *ctx) {
-	SDL_FRect rect = {this->x-5, this->y-5,10,10};
+	SDL_FRect rect = {this->x-10, this->y-10,20,20};
 	SDL_RenderDrawPointF(ctx, this->x, this->y);
 	SDL_RenderDrawRectF(ctx, &rect);
 }
 bool mt_cad::Node::hover(float mouse_x , float mouse_y){
-	return (mouse_x > this->x-5 && mouse_x < this->x +5) && (mouse_y > this->y-5 && mouse_y < this->y +5);
+	return (mouse_x > this->x-10 && mouse_x < this->x +10) && (mouse_y > this->y-10 && mouse_y < this->y +10);
 }
 float mt_cad::Node::get_angle(){
     return this->angle;

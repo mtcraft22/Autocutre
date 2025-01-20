@@ -19,7 +19,8 @@
 #include <mtcad/Rectangle.hpp>
 #include <mtcad/Shape.hpp>
 #include <mtcad/Triangle.hpp>
-
+#include <mtcad/ellipse.hpp>
+#include <mtcad/quadratic_curve.hpp>
 
 
 

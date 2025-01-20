@@ -11,29 +11,13 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
-#include "mtcad/Node.hpp"
-#include "mtcad/Rectangle.hpp"
-#include "mtcad/Shape.hpp"
-#include "mtcad/Triangle.hpp"
-#include "mtcad/circle.hpp"
-#include "mtcad/curve.hpp"
-#include "mtcad/ellipse.hpp"
-#include "mtcad/line.hpp"
-#include "mtcad/materials.hpp"
-#include "mtcad/quadratic_curve.hpp"
+#include <GUI/ImageButton.hpp>
+#include <GUI/callback.hpp>
+#include <mtcad/mtcad.hpp>
 #include <GUI/Boton.hpp>
 #include <SDL2/SDL_keycode.h>
-#include <map>
 #include <mtcad/mtcad.hpp>
 
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_filesystem.h>
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_video.h>
-
-#include <GUI/ImageButton.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -43,9 +27,8 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include <type_traits>
-#include <utility>
 #include <vector>
+
 using namespace std;
 int gridsize = 20 ;
 const int ticksframe = 1000/60;
@@ -58,21 +41,41 @@ void reset(){
     button_hit = true;
 }
 std::vector<GUI::ImageButton *> butons ;
-void click(GUI::Boton * target,void * userdata){
+void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
     int gapy, gapx;
 
-    target->getGap(&gapx, &gapy);
+    target.getGap(gapx, gapy);
 
     if (gapx == 6 || gapy == 6){
-        target->setGap(0, 0);
+        target.setGap(0, 0);
         creating = false;
         button_hit = false;
     }else{
         for (auto b: butons) {
 		    b->setGap(0,0);
         }
-        target->setGap(6,6);
-        curent_material = *(mt_cad::Materials_t *) userdata;
+        target.setGap(6,6);
+        curent_material = userdata;
+        reset();
+    }
+
+	
+}
+void click(GUI::ImageButton & target,mt_cad::Materials_t& userdata){
+    int gapy, gapx;
+
+    target.getGap(gapx, gapy);
+
+    if (gapx == 6 || gapy == 6){
+        target.setGap(0, 0);
+        creating = false;
+        button_hit = false;
+    }else{
+        for (auto b: butons) {
+		    b->setGap(0,0);
+        }
+        target.setGap(6,6);
+        curent_material = userdata;
         reset();
     }
 
@@ -158,8 +161,7 @@ int main(int argc, char **argv){
     SDL_UnlockTexture(gui);
    
     
-   std::vector<mt_cad::Node> nodes5 = {{500.0,static_cast<float>(500.0+ideal),XY},{540.0,static_cast<float>(500.0+ideal),XY},{500.0,static_cast<float>(540.0+ideal),XY}};
-    mt_cad::Ellipse *tri5 = new mt_cad::Ellipse(  nodes5  );
+ 
     
     //mt_cad::Curve Curv = mt_cad::Curve(  nodes  );
     int end,start = SDL_GetTicks(); 
@@ -168,7 +170,7 @@ int main(int argc, char **argv){
     bool press = false;
     std::vector<mt_cad::Shape *> shapes;
 
-    shapes.push_back(tri5);
+  
 
     
 
@@ -197,9 +199,18 @@ int main(int argc, char **argv){
     GUI::ImageButton quadraticbuton = GUI::ImageButton(quadratictext,310,10,c,c,"",&e);
 	butons.push_back(&quadraticbuton);
 
+  
+
     mt_cad::Materials_t mat = mt_cad::LINE;
-    linebuton.set_click_callback(click, &mat);
-    mt_cad::Materials_t mat2 = mt_cad::CURVE;
+
+    GUI::Callback< GUI::ImageButton ,mt_cad::Materials_t> call;;
+    call.set_callback(click);
+    call.set_userdata(mat);
+
+    linebuton.set_click_callback(call);
+    
+
+   /* mt_cad::Materials_t mat2 = mt_cad::CURVE;
     curvebuton.set_click_callback(click, &mat2);
     mt_cad::Materials_t mat3 = mt_cad::CIRCLE;
     circlebuton.set_click_callback(click, &mat3);
@@ -210,7 +221,7 @@ int main(int argc, char **argv){
     mt_cad::Materials_t mat6 = mt_cad::ELLIPSE;
     ellipsebuton.set_click_callback(click, &mat6);
     mt_cad::Materials_t mat7 = mt_cad::QUADRATIC;
-    quadraticbuton.set_click_callback(click, &mat7);
+    quadraticbuton.set_click_callback(click, &mat7);*/
     std::vector<mt_cad::Node> nodes_new_shape;
     int offx , offy;
 	while (run) {
@@ -552,11 +563,18 @@ int main(int argc, char **argv){
                         
                     }
                     if(!draggin){
+                        bool des = false;
                         if (sel >= 0){
                             for (mt_cad::Node n : shapes.at(sel)->get_points()){
-                                if (!n.hover(mx, my)){
-                                    sel = -1;
+                                
+                                if (n.hover(mx, my)){
+                                    des = true;
+                                    
                                 }
+                            }
+                            if (!des){
+                                sel = -1;
+                                innode = false;
                             }
                         }
                         std::vector<int> hover_shapes;
