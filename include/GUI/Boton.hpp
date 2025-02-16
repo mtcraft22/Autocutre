@@ -1,11 +1,12 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_atomic.h>
 #include <SDL2/SDL_ttf.h>
-#include <optional>
+
 #include <string>
 #include <GUI/callback.hpp>
-#include <vector>
+
 
 namespace GUI {
 	
@@ -24,18 +25,31 @@ namespace GUI {
 			void check_status();
 			bool Is_clicked();
 			bool Is_hover();
+			callback* on_click = nullptr;
+			callback* on_hover_release= nullptr;
+			callback* on_hover= nullptr;
 			
-		private:
-			Callback<class W, class T> click = Callback<class W, class T>();
-			Callback<class W, class T> _hover = Callback<class W, class T>();
-			Callback<class W, class T> hover_release = Callback<class W, class T>();
+
+		
+			
+
 		public:
-			template <typename c, typename W>
-			void set_click_callback (Callback<W,c>& callback);
-			template <typename H, typename W>
-			void set_hover_callback (Callback< W,H>& callback);
-			template <typename Hr, typename W>
-			void set_hover_release_callback (Callback< W,Hr>& callback);
+			template<typename C>
+			void set_click_callback (Callback<Boton, C> callback){
+				callback.set_buton(*(this));
+				this->on_click = new Callback(callback);
+				
+			}
+			template<typename H>
+			void set_hover_callback (Callback<Boton, H> callback){
+				callback.set_buton(*(this));
+				this->on_hover =new Callback(callback);
+			}
+			template<typename Hr>
+			void set_hover_release_callback (Callback<Boton, Hr> callback){
+				callback.set_buton(*(this));
+				this->on_hover_release =new Callback(callback);
+			}
 			
 			Boton(
 				int x,int y,
@@ -54,6 +68,11 @@ namespace GUI {
 			void getColor(SDL_Color& color, SDL_Color& colortext);
 			void setColor(SDL_Color color, SDL_Color colortext);
 			void render(SDL_Renderer* ctx, TTF_Font* font, SDL_Color* srccolor);
+			~Boton(){
+				delete on_click;
+				delete on_hover;
+				delete on_hover_release;
+			}
 	
 			
 	};

@@ -11,15 +11,20 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include "mtcad/Node.hpp"
+#include "mtcad/Triangle.hpp"
+#include "mtcad/materials.hpp"
 #include <GUI/ImageButton.hpp>
 #include <GUI/callback.hpp>
-#include <mtcad/mtcad.hpp>
 #include <GUI/Boton.hpp>
-#include <SDL2/SDL_keycode.h>
+
 #include <mtcad/mtcad.hpp>
 
+
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
 
 #include <cstdlib>
 #include <cmath>
@@ -41,7 +46,7 @@ void reset(){
     button_hit = true;
 }
 std::vector<GUI::ImageButton *> butons ;
-void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
+/*void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
     int gapy, gapx;
 
     target.getGap(gapx, gapy);
@@ -60,8 +65,8 @@ void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
     }
 
 	
-}
-void click(GUI::ImageButton & target,mt_cad::Materials_t& userdata){
+}*/
+void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
     int gapy, gapx;
 
     target.getGap(gapx, gapy);
@@ -139,9 +144,6 @@ int main(int argc, char **argv){
     path = std::string(SDL_GetBasePath()) + "res/buttons/quadratic_curve.png";
 	SDL_Texture* quadratictext =  IMG_LoadTexture(ctx,path.c_str());
     
-
-
-
     SDL_Color c = {255,255,0,255};
    
     render_grid(sw, sh, canvas);
@@ -169,8 +171,8 @@ int main(int argc, char **argv){
     bool run = true;
     bool press = false;
     std::vector<mt_cad::Shape *> shapes;
-
-  
+    mt_cad::Node  n = {10,10,XY};
+    shapes.push_back( new mt_cad::Triangle({n,n,n}));
 
     
 
@@ -202,14 +204,13 @@ int main(int argc, char **argv){
   
 
     mt_cad::Materials_t mat = mt_cad::LINE;
-
-    GUI::Callback< GUI::ImageButton ,mt_cad::Materials_t> call;;
+    
+    GUI::Callback< GUI::Boton ,mt_cad::Materials_t> call;
     call.set_callback(click);
     call.set_userdata(mat);
 
     linebuton.set_click_callback(call);
     
-
    /* mt_cad::Materials_t mat2 = mt_cad::CURVE;
     curvebuton.set_click_callback(click, &mat2);
     mt_cad::Materials_t mat3 = mt_cad::CIRCLE;
@@ -222,6 +223,7 @@ int main(int argc, char **argv){
     ellipsebuton.set_click_callback(click, &mat6);
     mt_cad::Materials_t mat7 = mt_cad::QUADRATIC;
     quadraticbuton.set_click_callback(click, &mat7);*/
+
     std::vector<mt_cad::Node> nodes_new_shape;
     int offx , offy;
 	while (run) {
@@ -245,8 +247,6 @@ int main(int argc, char **argv){
             
             if (shapes.size() > 0){
                 for ( int i = 0; i < shapes.size(); i++ ){
-                   
-
                     shapes.at(i)->draw(ctx);
                 }
             }

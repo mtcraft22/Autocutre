@@ -4,13 +4,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 namespace GUI {
-    
+
     class ImageButton : public GUI::Boton{
         private:
             SDL_Texture * img;
-            Callback<ImageButton, class T> click = Callback<ImageButton, class T>();
-            Callback<ImageButton, class T> hover = Callback<ImageButton, class T>();
-            Callback<ImageButton, class T> hover_release = Callback<ImageButton, class T>();
+            Callback<ImageButton, class T> click ;
+            Callback<ImageButton, class T> hover ;
+            Callback<ImageButton, class T> hover_release ;
         public:
             ImageButton(
                 SDL_Texture *img, 

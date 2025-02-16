@@ -31,21 +31,7 @@ GUI::Boton::Boton(
 }
 
 
-template <typename H,typename W>
-void GUI::Boton::set_hover_callback (Callback<W,H>& callback){
-    callback.set_buton(*(this));
-    this->_hover = callback;
-}
-template <typename Hr,typename W>
-void GUI::Boton::set_hover_release_callback(Callback<W,Hr>& callback){
-    callback.set_buton(*(this));
-    this->hover_release = callback;
-}
-template <typename c,typename W>
-void GUI::Boton::set_click_callback(Callback<W,c>& callback){
-    callback.set_buton(*(this));
-    this->click = callback;
-}
+
     
 
 bool GUI::Boton::Is_hover(){
@@ -74,16 +60,23 @@ void GUI::Boton::Boton::check_status(){
                 this->pressed = this->hover && this->e.button.button == SDL_BUTTON_LEFT ;
         }
         if (prev && !hover){
-            hover_release();
+            if (on_hover_release){
+                (*on_hover_release)();
+            }
+            
         }else{
 
             if(this->hover && !this->pressed){
-                _hover();
+                if (on_hover){
+                    (*on_hover)();
+                }
             }
         }
         
         if(this->pressed){
-            click();
+            if (on_click){
+                (*on_click)();
+            }
         }
     
     

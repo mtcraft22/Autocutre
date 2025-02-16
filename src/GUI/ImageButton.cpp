@@ -15,6 +15,9 @@ GUI::ImageButton::ImageButton(
 	):GUI::Boton(x,y,gapx,gapy,bg,fg,"",e),img(img) 
 	{
 		SDL_QueryTexture(img,NULL,NULL,&this->w,&this->h);
+		this->click = Callback<ImageButton, class T>();
+		this->hover = Callback<ImageButton, class T>();
+		this->hover_release = Callback<ImageButton, class T>();
 	}
 
 void GUI::ImageButton::render(SDL_Renderer * ctx){
