@@ -11,17 +11,19 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
-#pragma once
-#include <mtcad/Node.hpp>
-#include <mtcad/circle.hpp>
-#include <mtcad/curve.hpp>
-#include <mtcad/line.hpp>
-#include <mtcad/Rectangle.hpp>
-#include <mtcad/Shape.hpp>
-#include <mtcad/Triangle.hpp>
-#include <mtcad/ellipse.hpp>
-#include <mtcad/quadratic_curve.hpp>
-#include <mtcad/arc.hpp>
+#pragma once 
+#include <mtcad/mtcad.hpp>
 
+namespace mt_cad {
+    class Arc : public mt_cad::Circle{
+        public:
+            int angle_pos = 0;
+            static const int max_nodes;
+            static const mt_cad::Materials_t material;
+            Arc(std::vector<Node> nodes);
+            void draw(SDL_Renderer * ctx) override;
+            bool hover(int x , int y)override;
+    };
+} 
 
 

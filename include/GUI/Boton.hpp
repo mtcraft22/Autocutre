@@ -23,8 +23,6 @@ namespace GUI {
 			std::string text;
 			int x, y;
 			void check_status();
-			bool Is_clicked();
-			bool Is_hover();
 			callback* on_click = nullptr;
 			callback* on_hover_release= nullptr;
 			callback* on_hover= nullptr;

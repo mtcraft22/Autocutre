@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26.4)
-project(Bezier DESCRIPTION "cad app" LANGUAGES CXX)
+project(Autocutre DESCRIPTION "cad app" LANGUAGES CXX)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 add_executable(${PROJECT_NAME}

@@ -11,18 +11,16 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
-#include "mtcad/Node.hpp"
-#include "mtcad/Triangle.hpp"
-#include "mtcad/materials.hpp"
+
+#include "mtcad/arc.hpp"
 #include <GUI/ImageButton.hpp>
 #include <GUI/callback.hpp>
 #include <GUI/Boton.hpp>
 
 #include <mtcad/mtcad.hpp>
 
-
-#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL.h>
+
 #include <SDL2/SDL_image.h>
 
 
@@ -66,7 +64,7 @@ std::vector<GUI::ImageButton *> butons ;
 
 	
 }*/
-void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
+void click(GUI::ImageButton & target,mt_cad::Materials_t& userdata){
     int gapy, gapx;
 
     target.getGap(gapx, gapy);
@@ -113,7 +111,7 @@ int main(int argc, char **argv){
         std::cout << SDL_GetError() << std::endl;
         return -1;
     }
-    SDL_Window * window = SDL_CreateWindow("curbas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+    SDL_Window * window = SDL_CreateWindow("Autocutre", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
     SDL_Renderer * ctx = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
     int psw , psh;
     int sw,sh;
@@ -171,13 +169,15 @@ int main(int argc, char **argv){
     bool run = true;
     bool press = false;
     std::vector<mt_cad::Shape *> shapes;
-    mt_cad::Node  n = {10,10,XY};
-    shapes.push_back( new mt_cad::Triangle({n,n,n}));
-
+    mt_cad::Node n = {100,100,XY};
+    mt_cad::Node n2 = {200,200,XY};
+    mt_cad::Node n3 = {300,300,X};
+    mt_cad::Node n4 = {100,200,X};
+    shapes.push_back(new mt_cad::Arc({n,n2,n3,n4}));
     
 
     SDL_Event e;
-    
+
     bool draggin = false;
     bool innode = false;
     
@@ -203,26 +203,34 @@ int main(int argc, char **argv){
 
   
 
-    mt_cad::Materials_t mat = mt_cad::LINE;
-    
-    GUI::Callback< GUI::Boton ,mt_cad::Materials_t> call;
-    call.set_callback(click);
-    call.set_userdata(mat);
+    mt_cad::Materials_t mat_linebuton = mt_cad::LINE;
+    auto call_linebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_linebuton,click);
+    linebuton.set_click_callback(call_linebuton);
 
-    linebuton.set_click_callback(call);
-    
-   /* mt_cad::Materials_t mat2 = mt_cad::CURVE;
-    curvebuton.set_click_callback(click, &mat2);
-    mt_cad::Materials_t mat3 = mt_cad::CIRCLE;
-    circlebuton.set_click_callback(click, &mat3);
-    mt_cad::Materials_t mat4 = mt_cad::RECTANGLE;
-    rectanglebuton.set_click_callback(click, &mat4);
-    mt_cad::Materials_t mat5 = mt_cad::TRIANGLE;
-    trianglebuton.set_click_callback(click, &mat5);
-    mt_cad::Materials_t mat6 = mt_cad::ELLIPSE;
-    ellipsebuton.set_click_callback(click, &mat6);
-    mt_cad::Materials_t mat7 = mt_cad::QUADRATIC;
-    quadraticbuton.set_click_callback(click, &mat7);*/
+    mt_cad::Materials_t mat_curvebuton = mt_cad::CURVE;
+    auto call_curvebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_curvebuton,click);
+    curvebuton.set_click_callback(call_curvebuton);
+
+    mt_cad::Materials_t mat_circlebuton = mt_cad::CIRCLE;
+    auto call_circlebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_circlebuton,click);
+    circlebuton.set_click_callback(call_circlebuton);
+
+    mt_cad::Materials_t mat_trianglebuton = mt_cad::TRIANGLE;
+    auto call_trianglebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_trianglebuton,click);
+    trianglebuton.set_click_callback(call_trianglebuton);
+
+    mt_cad::Materials_t mat_ellipsebuton = mt_cad::ELLIPSE;
+    auto call_ellipsebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_ellipsebuton,click);
+    ellipsebuton.set_click_callback(call_ellipsebuton);
+
+    mt_cad::Materials_t mat_quadraticbuton = mt_cad::QUADRATIC;
+    auto call_quadraticbuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_quadraticbuton,click);
+    quadraticbuton.set_click_callback(call_quadraticbuton);
+
+    mt_cad::Materials_t mat_rectanglebuton = mt_cad::RECTANGLE;
+    auto call_rectanglebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_rectanglebuton,click);
+    rectanglebuton.set_click_callback(call_rectanglebuton);
+
 
     std::vector<mt_cad::Node> nodes_new_shape;
     int offx , offy;
@@ -251,7 +259,7 @@ int main(int argc, char **argv){
                 }
             }
             
-            if (sel >= 0){
+            if (sel >= 0 && shapes.size()> 0){
                 for (int i = 0; i< shapes.at(sel)->get_points().size(); i++){
                 SDL_SetRenderDrawColor(ctx, 255, 0, 0,255);
                 shapes.at(sel)->get_points().at(i).draw(ctx);
@@ -295,8 +303,9 @@ int main(int argc, char **argv){
                                 ideal = canvas_y_coord + i;
                             }
                         }
-                        for ( int i = 0; i < shapes.size(); i++ ){
-                           for (int i2 = 0; i2< shapes.at(i)->get_points().size(); i2++){
+                        if (shapes.size() > 0){
+                            for ( int i = 0; i < shapes.size(); i++ ){
+                                for (int i2 = 0; i2< shapes.at(i)->get_points().size(); i2++){
                                     std::vector<mt_cad::Node> nodes = shapes.at(i)->get_points();
                                     float x,y ;
                                     Restictions res =  nodes.at(i2).get_canmove();
@@ -308,23 +317,32 @@ int main(int argc, char **argv){
                                     shapes.at(i)->set_points( nodes,true);
                                 }
                             }
+                        }
                         
                        
                     }
                     
                 }
                 if (e.type == SDL_KEYDOWN){
-                    std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                    std::vector<mt_cad::Node> nodes = {};
+                    if (shapes.size()>0){
+                        std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                    }
                     switch (e.key.keysym.sym ) {
                         case SDLK_LEFT:
                             
-                            sel  ++;
                             
-                            if (sel > (shapes.size() -1)){sel = 0 ;}
+                            if (shapes.size()>0){
+                                sel  ++;
+                                if (sel > (shapes.size() -1)){sel = 0 ;}
+                            }
                             break;
                         case SDLK_RIGHT:
-                            sel --;
-                            if (sel < 0){sel = shapes.size()-1 ;}
+                           
+                            if (shapes.size()>0){
+                                sel --;
+                                if (sel < 0){sel = shapes.size()-1 ;}
+                            }
                             break;
                         case SDLK_ESCAPE :
                             for (auto b: butons) {
@@ -334,7 +352,7 @@ int main(int argc, char **argv){
                             button_hit  = false;
                             break;
                         case SDLK_DELETE:
-                            if (sel >= 0){
+                            if (sel >= 0 && shapes.size() >= 0){
                                 delete shapes.at(sel);
                                 shapes.erase(shapes.begin() + sel);
                                 sel = -1;
@@ -345,55 +363,56 @@ int main(int argc, char **argv){
                             if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
                                     break;
                                 }
-                            
-                            for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
-                                float px,py;
-                                float cx,cy;
-                                nodes.at(0).get_coords(cx, cy);
-                                nodes.at(i).get_coords(px, py);
-                                
-                                double radius = sqrtf (abs(abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
-                                float dy = py - cy;
-                                float dx = px - cx;
-                                double theta = atan2(dy,dx);
-                                theta *= 180/3.1416;
-                                if (theta < 0) theta = 360 + theta;
-                                nodes.at(i).set_angle(theta+ 1);
-                                px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
-                                py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
-                                nodes.at(i).set_coords(px, py);
-                                
+                            if (shapes.size()>=0 && sel > -1){
+                                for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+                                    float px,py;
+                                    float cx,cy;
+                                    nodes.at(0).get_coords(cx, cy);
+                                    nodes.at(i).get_coords(px, py);
+                                    
+                                    double radius = sqrtf (abs(abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
+                                    float dy = py - cy;
+                                    float dx = px - cx;
+                                    double theta = atan2(dy,dx);
+                                    theta *= 180/3.1416;
+                                    if (theta < 0) theta = 360 + theta;
+                                    nodes.at(i).set_angle(theta+ 1);
+                                    px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
+                                    py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
+                                    nodes.at(i).set_coords(px, py);
+                                    
+                                } 
+                                shapes.at(sel)->set_points(nodes,true);
                             }
-                            shapes.at(sel)->set_points(nodes,true);
                             break;
                         case SDLK_q:
                             
-                            
-                            for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
-                                if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
-                                    continue;
+                            if (shapes.size()>=0 && sel > -1){
+                                for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+                                    if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
+                                        break;
+                                    }
+                                    float px,py;
+                                    float cx,cy;
+                                    nodes.at(0).get_coords(cx, cy);
+                                    nodes.at(i).get_coords(px, py);
+                                    
+                                    double radius = sqrtf ((abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
+                                    float dy = py - cy;
+                                    float dx = px - cx;
+                                    double theta = atan2(dy,dx);
+                                    theta *= 180/3.1416;
+                                    if (theta < 0){theta = 360 + theta;};
+                        
+                                    nodes.at(i).set_angle(theta- 1);
+                                    px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
+                                    py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
+                                    
+                                    nodes.at(i).set_coords(px, py);
+                                    
                                 }
-                                float px,py;
-                                float cx,cy;
-                                nodes.at(0).get_coords(cx, cy);
-                                nodes.at(i).get_coords(px, py);
-                                
-                                double radius = sqrtf ((abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
-                                float dy = py - cy;
-                                float dx = px - cx;
-                                double theta = atan2(dy,dx);
-                                theta *= 180/3.1416;
-                                if (theta < 0) theta = 360 + theta;
-                                cout << radius << endl;
-                                nodes.at(i).set_angle(theta- 1);
-                                px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
-                                py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
-                                
-                                nodes.at(i).set_coords(px, py);
-                                
-                            }
-                            shapes.at(sel)->set_points(nodes,true);
-                            break;
+                                shapes.at(sel)->set_points(nodes,true);}
+                                break;
                             
                     }
                     
@@ -559,12 +578,13 @@ int main(int argc, char **argv){
 									}
                                 }
                                 break;
-                        }
-                        
+                            case mt_cad::ARC:
+                              break;
+                            }
                     }
                     if(!draggin){
                         bool des = false;
-                        if (sel >= 0){
+                        if (sel >= 0 && shapes.size()){
                             for (mt_cad::Node n : shapes.at(sel)->get_points()){
                                 
                                 if (n.hover(mx, my)){
@@ -578,7 +598,7 @@ int main(int argc, char **argv){
                             }
                         }
                         std::vector<int> hover_shapes;
-                        if (shapes.size()> 0){
+                        if (shapes.size()> 0 && shapes.size()){
                             for ( int x = 0; x < shapes.size(); x++ ){
                                 if (shapes.at(x)->hover(mx, my)){
                                     hover_shapes.push_back(x);
@@ -610,7 +630,7 @@ int main(int argc, char **argv){
                       
                         
                         
-                        
+                        cout << "selected: " << sel << endl;
                     }
                   
                 }
@@ -627,7 +647,7 @@ int main(int argc, char **argv){
                     my = e.motion.y;
                     
                     if (draggin ){
-                        if (sel < 0){
+                        if (sel < 0 && shapes.size()){
                         
                            offy += e.motion.yrel;
                            offx += e.motion.xrel;
@@ -645,7 +665,7 @@ int main(int argc, char **argv){
                             }
                   
                         }
-                        if (!innode && sel >= 0){
+                        if (!innode && sel >= 0 && shapes.size()){
                             for (int i = 0; i< shapes.at(sel)->get_points().size(); i++){
                                 if(draggin && shapes.at(sel)->get_points().at(i).hover(mx, my) ){
                                     std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
@@ -664,23 +684,46 @@ int main(int argc, char **argv){
                                             
                                         }
                                     }
+                                    if (mt_cad::Arc * c = dynamic_cast<mt_cad::Arc*>(shapes.at(sel))){
+                                        if (i == 3){
+                                           
+                                            std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                                            float x,y ;
+                                            nodes.at(3).get_coords(x, y);
+                                            nodes.at(3).set_coords(x + e.motion.xrel,y + e.motion.yrel);
+                                            shapes.at(sel)->set_points( nodes,true);
+                                            
+                                        }
+                                    }
                                     break;
                             }
                         }
-                        }else if (draggin && sel >= 0) {
+                        }else if (draggin && sel >= 0 && shapes.size()> 0) {
                             std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
                             nodes.at(selnode).set_coords(gridsize * (std::trunc(mx/gridsize)),(gridsize * (std::trunc(my/gridsize))));
 
                             shapes.at(sel)->set_points( nodes,true);
-                                if (selnode == 0){
-                                    for (int i = 1; i< shapes.at(sel)->get_points().size(); i++){
-                                        std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
-                                        float x,y ;
-                                        nodes.at(i).get_coords(x, y);
-                                        nodes.at(i).set_coords(x + e.motion.xrel,y + e.motion.yrel);
-                                        shapes.at(sel)->set_points( nodes,true);
-                                    }
+
+                            if (mt_cad::Arc * c = dynamic_cast<mt_cad::Arc*>(shapes.at(sel))){
+                                if (selnode == 3){
+                                   
+                                    std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                                    float x,y ;
+                                    nodes.at(3).get_coords(x, y);
+                                    nodes.at(3).set_coords(x + e.motion.xrel,y + e.motion.yrel);
+                                    shapes.at(sel)->set_points( nodes,true);
+                                    
                                 }
+                            }
+                            if (selnode == 0){
+                                for (int i = 1; i< shapes.at(sel)->get_points().size(); i++){
+                                    std::vector<mt_cad::Node> nodes = shapes.at(sel)->get_points();
+                                    float x,y ;
+                                    nodes.at(i).get_coords(x, y);
+                                    nodes.at(i).set_coords(x + e.motion.xrel,y + e.motion.yrel);
+                                    shapes.at(sel)->set_points( nodes,true);
+                                }
+                            }
                         }
                         
                       

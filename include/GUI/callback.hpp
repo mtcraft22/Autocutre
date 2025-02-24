@@ -1,7 +1,7 @@
 #pragma once
+
 #include <GUI/callback.hpp>
-#include <iostream>
-#include <ostream>
+
 namespace GUI {
     class callback{
         public:
@@ -19,6 +19,14 @@ namespace GUI {
             Callback(){
                 this->userdata = nullptr;
                 this->button = nullptr;
+            }
+            Callback(T* userdata){
+                this->userdata = userdata;
+                this->button = nullptr;
+            }
+            Callback(T* userdata,void (*call)(Widget& bot , T& userdata)){
+                this->userdata = userdata;
+                this->call = call;
             }
 
             void set_buton(Widget& button) {

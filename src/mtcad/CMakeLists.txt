@@ -11,6 +11,7 @@ add_library(${PROJECT_NAME} SHARED
     ${PROJECT_SOURCE_DIR}/line.cpp
     ${PROJECT_SOURCE_DIR}/ellipse.cpp
     ${PROJECT_SOURCE_DIR}/quadratic_curve.cpp
+    ${PROJECT_SOURCE_DIR}/arc.cpp
 
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include)
