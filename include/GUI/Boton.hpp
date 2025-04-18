@@ -5,12 +5,12 @@
 #include <SDL2/SDL_ttf.h>
 
 #include <string>
-#include <GUI/Widget.hpp>
+#include <GUI/widgets/Widget.hpp>
 
 
 namespace GUI {
 	
-	class Boton:public Widget{
+	class Boton:public GUI::Widget{
 		protected:
 			
 			SDL_Event e;
@@ -23,15 +23,7 @@ namespace GUI {
 			std::string text;
 			int x, y;
 			void check_status();
-		
-			
-
-		
-			
-
 		public:
-			
-			
 			Boton(
 				int x,int y,
 				int gapX,int gapY, 

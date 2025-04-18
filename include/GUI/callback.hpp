@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GUI/callback.hpp>
+#include "callback.hpp"
 
 namespace GUI {
     class callback{

@@ -1,6 +1,6 @@
 #pragma once
 #include "Boton.hpp"
-#include "GUI/callback.hpp"
+#include "GUI/events/callback.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 namespace GUI {
@@ -25,7 +25,7 @@ namespace GUI {
             template<typename C>
             void set_click_callback (Callback<ImageButton, C> callback){
                 callback.set_buton(*(this));
-                this->on_click = new Callback(callback);
+                this-> = new Callback(callback);
                 
             }
             template<typename H>
