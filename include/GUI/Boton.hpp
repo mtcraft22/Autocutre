@@ -17,9 +17,7 @@ namespace GUI {
 			SDL_Event e;
 			int w,h;
 			int gapX, gapY;
-			SDL_Rect* box;
-			SDL_Color bg;
-			SDL_Color fg;
+			
 			bool pressed, hover;
 			std::string text;
 			int x, y;
@@ -41,9 +39,6 @@ namespace GUI {
 			void render(SDL_Renderer* ctx) override;
 			void getGap(int& gapX, int& gapY);
 			void setGap(int gapX, int gapY);
-			void getPos(int& x, int& y);
-			void setPos(int x, int y);
-			void getColor(SDL_Color& color, SDL_Color& colortext);
-			void setColor(SDL_Color color, SDL_Color colortext);
+			
 	};
 }

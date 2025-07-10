@@ -12,6 +12,7 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 
+#include "GUI/Boton.hpp"
 #include "mtcad/arc.hpp"
 #include "GUI/ImageButton.hpp"
 #include "GUI/callback.hpp"
@@ -31,6 +32,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+
 
 using namespace std;
 int gridsize = 20 ;
@@ -243,13 +245,8 @@ int main(int argc, char **argv){
             //Curv.draw(ctx);
             
             while (SDL_PollEvent(&e)) {
-                linebuton.set_evento(e);
-                curvebuton.set_evento(e);
-                circlebuton.set_evento(e);
-                trianglebuton.set_evento(e);
-                rectanglebuton.set_evento(e);
-                ellipsebuton.set_evento(e);
-                quadraticbuton.set_evento(e);
+                GUI::Widget::notifyEventUpdate(e);
+                
                 if (e.type == SDL_QUIT) {
                     run = false;
                 }

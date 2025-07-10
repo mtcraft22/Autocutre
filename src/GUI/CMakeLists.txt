@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME} SHARED
     
     ${PROJECT_SOURCE_DIR}/Boton.cpp
     ${PROJECT_SOURCE_DIR}/ImageButton.cpp
+    ${PROJECT_SOURCE_DIR}/Widget.cpp
 
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include/)

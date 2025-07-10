@@ -7,12 +7,11 @@ namespace GUI {
         HOVER ,
         HOVER_RELEASE ,
         IMAGE_CHANGED ,
-        TAB_CHANGED ,
-        TAB_ADDED ,
-        TAB_REMOVED ,
-        TAB_ITEM_REMOVED ,
-        TAB_ITEM_ADDED ,
+        TAB_TITLE_CLICK,
+        
         KEY_PRESS ,
+        TEXT_INPUT,
+        
     } Events_t ;
 }
 
