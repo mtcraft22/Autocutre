@@ -1,43 +1,30 @@
 #pragma once
 #include "Boton.hpp"
-#include "GUI/events/callback.hpp"
+#include "callback.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 namespace GUI {
     
     class ImageButton : public GUI::Boton{
         private:
-            SDL_Texture * img;
-            Callback<ImageButton, class T> click ;
-            Callback<ImageButton, class T> hover ;
-            Callback<ImageButton, class T> hover_release ;
+
+			SDL_Texture * img;
+
         public:
             ImageButton(
                 SDL_Texture *img, 
                 int x, int y, 
                 SDL_Color bg, 
-                SDL_Color fg, 
-                std::string text,
+                SDL_Color fg,
                 SDL_Event *e,
                 int gapy=0 , 
                 int gapx =0
             );
-            template<typename C>
-            void set_click_callback (Callback<ImageButton, C> callback){
-                callback.set_buton(*(this));
-                this-> = new Callback(callback);
-                
-            }
-            template<typename H>
-            void set_hover_callback (Callback<ImageButton, H> callback){
-                callback.set_buton(*(this));
-                this->on_hover =new Callback(callback);
-            }
-            template<typename Hr>
-            void set_hover_release_callback (Callback<ImageButton, Hr> callback){
-                callback.set_buton(*(this));
-                this->on_hover_release =new Callback(callback);
-            }
+			template<typename Widget=GUI::ImageButton, typename T>
+			void set_event(GUI::Events_t type, GUI::Callback<Widget, T> call) {
+				call.set_buton(*(this));
+				GUI::Widget::set_event(type, call);
+			}
             void render(SDL_Renderer* ctx);
     };
 }

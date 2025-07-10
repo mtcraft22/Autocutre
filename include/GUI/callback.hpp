@@ -29,6 +29,7 @@ namespace GUI {
                 this->call = call;
             }
 
+
             void set_buton(Widget& button) {
                 this->button = &button;
             }
@@ -37,7 +38,8 @@ namespace GUI {
                 this->userdata = &userdata;
             }
 
-            void operator()() override{
+
+		void operator()() override{
                 if (this->call && this->button && this->userdata) {
                     this->call(*(this->button),*(this->userdata));
                 }

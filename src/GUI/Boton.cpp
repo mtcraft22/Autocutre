@@ -1,10 +1,11 @@
 #include <GUI/Boton.hpp>
+#include <GUI/callback.hpp>
 #include <SDL2/SDL_events.h>
 #include <cstddef>
 #include <cstdio>
 #include <optional>
 #include <string>
-#include <GUI/callback.hpp>
+#include <iostream>
 
 
 GUI::Boton::Boton(
@@ -13,7 +14,8 @@ GUI::Boton::Boton(
     SDL_Color color, 
     SDL_Color colortext,
     std::string text,
-    SDL_Event* e
+    SDL_Event* e,
+    TTF_Font * font
 )
 {
 	this->text = text;
@@ -28,26 +30,11 @@ GUI::Boton::Boton(
 	this->gapY = gapY;
 	SDL_Rect col = { x,y,10,10 };
 	this->box = &col;
+    this->font = font;
+    this->srccolor = &colortext;
+
 }
-
-
-
-    
-
-bool GUI::Boton::Is_hover(){
-    return this->hover;
-}
-
-bool GUI::Boton::Boton::Is_clicked(){
-    return this->pressed;
-}
-
-void GUI::Boton::Boton::set_evento(SDL_Event *e){
-    this->e = *(e);
-    this->check_status();
-}
-
-void GUI::Boton::Boton::check_status(){
+void GUI::Boton::check_status(){
 
         
         bool prev = this->hover;
@@ -60,30 +47,38 @@ void GUI::Boton::Boton::check_status(){
                 this->pressed = this->hover && this->e.button.button == SDL_BUTTON_LEFT ;
         }
         if (prev && !hover){
-            if (on_hover_release){
-                (*on_hover_release)();
-            }
+			auto call = this->get_event(HOVER_RELEASE);
+			if(call){
+				(*call)();
+			}
+
             
         }else{
 
             if(this->hover && !this->pressed){
-                if (on_hover){
-                    (*on_hover)();
-                }
+				auto call = this->get_event(HOVER);
+				if(call){
+					(*call)();
+				}
             }
         }
-        
+
         if(this->pressed){
-            if (on_click){
-                (*on_click)();
-            }
+			auto call = this->get_event(CLICK);
+			std::cout << call << std::endl;
+			if(call){
+				(*call)();
+			}
         }
     
     
     }     
 
     
-
+void GUI::Boton::set_evento(SDL_Event e) {
+	this->e = e;
+	this->check_status();
+}
 void GUI::Boton::Boton::getGap(int& gapX, int& gapY)
 {
     gapX = this->gapX;
@@ -97,14 +92,14 @@ void GUI::Boton::Boton::setGap(int gapX, int gapY)
 }
 
 
-void GUI::Boton::Boton::getPos(int& x, int& y)
+void GUI::Boton::getPos(int& x, int& y)
 {
     x = this->x;
     y = this->y;
 }
 
 
-void GUI::Boton::Boton::setPos(int x, int y)
+void GUI::Boton::setPos(int x, int y)
 {
     this->x=x;
     this->y=y;
@@ -129,7 +124,7 @@ void GUI::Boton::Boton::setColor(SDL_Color color, SDL_Color colortext)
 
 
 
-void GUI::Boton::render(SDL_Renderer* ctx, TTF_Font* font,SDL_Color * srccolor)
+void GUI::Boton::render(SDL_Renderer* ctx)
 {
     
     SDL_Color bg ={this->bg.r, this->bg.g, this->bg.b, 1};
@@ -151,4 +146,6 @@ void GUI::Boton::render(SDL_Renderer* ctx, TTF_Font* font,SDL_Color * srccolor)
     SDL_FreeSurface(txt);
     SDL_DestroyTexture(txt_text);
 }
+
+
 

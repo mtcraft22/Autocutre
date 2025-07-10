@@ -13,9 +13,9 @@
 */
 
 #include "mtcad/arc.hpp"
-#include <GUI/ImageButton.hpp>
-#include <GUI/callback.hpp>
-#include <GUI/Boton.hpp>
+#include "GUI/ImageButton.hpp"
+#include "GUI/callback.hpp"
+#include "mtcad/materials.hpp"
 
 #include <mtcad/mtcad.hpp>
 
@@ -44,27 +44,9 @@ void reset(){
     button_hit = true;
 }
 std::vector<GUI::ImageButton *> butons ;
-/*void click(GUI::Boton & target,mt_cad::Materials_t& userdata){
-    int gapy, gapx;
 
-    target.getGap(gapx, gapy);
+void click(GUI::ImageButton &target,mt_cad::materials& userdata){
 
-    if (gapx == 6 || gapy == 6){
-        target.setGap(0, 0);
-        creating = false;
-        button_hit = false;
-    }else{
-        for (auto b: butons) {
-		    b->setGap(0,0);
-        }
-        target.setGap(6,6);
-        curent_material = userdata;
-        reset();
-    }
-
-	
-}*/
-void click(GUI::ImageButton & target,mt_cad::Materials_t& userdata){
     int gapy, gapx;
 
     target.getGap(gapx, gapy);
@@ -186,50 +168,35 @@ int main(int argc, char **argv){
     int sel = 0;
     int selnode = 0;
 
-    GUI::ImageButton linebuton      = GUI::ImageButton(linetext,10,10,c,c,"",&e);
+    GUI::ImageButton linebuton      = GUI::ImageButton(linetext,10,10,c,c,&e);
 	butons.push_back(&linebuton);
-    GUI::ImageButton curvebuton     = GUI::ImageButton(curvetext,60,10,c,c,"",&e);
+    GUI::ImageButton curvebuton     = GUI::ImageButton(curvetext,60,10,c,c,&e);
 	butons.push_back(&curvebuton);
-    GUI::ImageButton circlebuton    = GUI::ImageButton(circletext,110,10,c,c,"",&e);
+    GUI::ImageButton circlebuton    = GUI::ImageButton(circletext,110,10,c,c,&e);
 	butons.push_back(&circlebuton);
-    GUI::ImageButton rectanglebuton = GUI::ImageButton(rectangletext,160,10,c,c,"",&e);
+    GUI::ImageButton rectanglebuton = GUI::ImageButton(rectangletext,160,10,c,c,&e);
 	butons.push_back(&rectanglebuton);
-    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,210,10,c,c,"",&e);
+    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,210,10,c,c,&e);
 	butons.push_back(&trianglebuton);
-    GUI::ImageButton ellipsebuton   = GUI::ImageButton(elipsetext,260,10,c,c,"",&e);
+    GUI::ImageButton ellipsebuton   = GUI::ImageButton(elipsetext,260,10,c,c,&e);
 	butons.push_back(&ellipsebuton);
-    GUI::ImageButton quadraticbuton = GUI::ImageButton(quadratictext,310,10,c,c,"",&e);
+    GUI::ImageButton quadraticbuton = GUI::ImageButton(quadratictext,310,10,c,c,&e);
 	butons.push_back(&quadraticbuton);
 
-  
-
-    mt_cad::Materials_t mat_linebuton = mt_cad::LINE;
-    auto call_linebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_linebuton,click);
-    linebuton.set_click_callback(call_linebuton);
-
-    mt_cad::Materials_t mat_curvebuton = mt_cad::CURVE;
-    auto call_curvebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_curvebuton,click);
-    curvebuton.set_click_callback(call_curvebuton);
-
-    mt_cad::Materials_t mat_circlebuton = mt_cad::CIRCLE;
-    auto call_circlebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_circlebuton,click);
-    circlebuton.set_click_callback(call_circlebuton);
-
-    mt_cad::Materials_t mat_trianglebuton = mt_cad::TRIANGLE;
-    auto call_trianglebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_trianglebuton,click);
-    trianglebuton.set_click_callback(call_trianglebuton);
-
-    mt_cad::Materials_t mat_ellipsebuton = mt_cad::ELLIPSE;
-    auto call_ellipsebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_ellipsebuton,click);
-    ellipsebuton.set_click_callback(call_ellipsebuton);
-
-    mt_cad::Materials_t mat_quadraticbuton = mt_cad::QUADRATIC;
-    auto call_quadraticbuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_quadraticbuton,click);
-    quadraticbuton.set_click_callback(call_quadraticbuton);
-
-    mt_cad::Materials_t mat_rectanglebuton = mt_cad::RECTANGLE;
-    auto call_rectanglebuton = GUI::Callback<GUI::ImageButton, mt_cad::Materials_t> (&mat_rectanglebuton,click);
-    rectanglebuton.set_click_callback(call_rectanglebuton);
+	auto line_mat = mt_cad::materials::LINE;
+   	linebuton.set_event(GUI::CLICK,GUI::Callback( &line_mat, click));
+	auto line_curve = mt_cad::materials::CURVE;
+   	curvebuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_curve, click));
+	auto line_circle = mt_cad::materials::CIRCLE;
+	circlebuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_circle, click));
+	auto line_rec = mt_cad::materials::RECTANGLE;
+	rectanglebuton.set_event(GUI::CLICK,GUI::Callback( &line_rec, click));
+	auto line_tri = mt_cad::materials::TRIANGLE;
+	trianglebuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_tri, click));
+	auto line_elip = mt_cad::materials::ELLIPSE;
+	ellipsebuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_elip, click));
+	auto line_qua = mt_cad::materials::QUADRATIC;
+	quadraticbuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_qua, click));
 
 
     std::vector<mt_cad::Node> nodes_new_shape;
@@ -276,13 +243,13 @@ int main(int argc, char **argv){
             //Curv.draw(ctx);
             
             while (SDL_PollEvent(&e)) {
-                linebuton.set_evento(&e);
-                curvebuton.set_evento(&e);
-                circlebuton.set_evento(&e);
-                trianglebuton.set_evento(&e);
-                rectanglebuton.set_evento(&e);
-                ellipsebuton.set_evento(&e);
-                quadraticbuton.set_evento(&e);
+                linebuton.set_evento(e);
+                curvebuton.set_evento(e);
+                circlebuton.set_evento(e);
+                trianglebuton.set_evento(e);
+                rectanglebuton.set_evento(e);
+                ellipsebuton.set_evento(e);
+                quadraticbuton.set_evento(e);
                 if (e.type == SDL_QUIT) {
                     run = false;
                 }
@@ -360,13 +327,16 @@ int main(int argc, char **argv){
                             }
                             break;
                         case SDLK_e:
-                            if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
-                                    break;
-                                }
-                            if (shapes.size()>=0 && sel > -1){
+
+                            if (shapes.size()>0 && sel > -1){
+								nodes = shapes.at(sel)->get_points();
                                 for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+									if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
+										break;
+									}
                                     float px,py;
                                     float cx,cy;
+
                                     nodes.at(0).get_coords(cx, cy);
                                     nodes.at(i).get_coords(px, py);
                                     
@@ -375,7 +345,7 @@ int main(int argc, char **argv){
                                     float dx = px - cx;
                                     double theta = atan2(dy,dx);
                                     theta *= 180/3.1416;
-                                    if (theta < 0) theta = 360 + theta;
+									if (theta < 0){theta = 360 + theta;}
                                     nodes.at(i).set_angle(theta+ 1);
                                     px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
                                     py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
@@ -386,35 +356,39 @@ int main(int argc, char **argv){
                             }
                             break;
                         case SDLK_q:
-                            
-                            if (shapes.size()>=0 && sel > -1){
+
+                            if ((!shapes.empty()) && (sel > -1)){
+								nodes = shapes.at(sel)->get_points();
                                 for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
+
                                     if (mt_cad::Circle * c = dynamic_cast<mt_cad::Circle*>(shapes.at(sel))){
                                         break;
                                     }
                                     float px,py;
                                     float cx,cy;
+
                                     nodes.at(0).get_coords(cx, cy);
                                     nodes.at(i).get_coords(px, py);
-                                    
+
                                     double radius = sqrtf ((abs(px - cx) * abs(px - cx)) + (abs(py - cy) * abs(py - cy)));
                                     float dy = py - cy;
                                     float dx = px - cx;
                                     double theta = atan2(dy,dx);
                                     theta *= 180/3.1416;
-                                    if (theta < 0){theta = 360 + theta;};
-                        
+                                    if (theta < 0){theta = 360 + theta;}
+
                                     nodes.at(i).set_angle(theta- 1);
                                     px = cos(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cx;
                                     py = sin(((double)(nodes.at(i).get_angle())/180)*3.1416)*radius+cy;
                                     
                                     nodes.at(i).set_coords(px, py);
+
                                     
                                 }
                                 shapes.at(sel)->set_points(nodes,true);}
                                 break;
                             
-                    }
+					}
                     
                     
                 }
@@ -611,6 +585,7 @@ int main(int argc, char **argv){
                             central.get_coords(cx, cy);
                             float distmin = (abs(cx-mx)  *  abs(cx-mx)) + (abs(cy-my)  *  abs(cy-my));
                             for (int h : hover_shapes){
+
                                 for (auto central : shapes.at(h)->get_points()) {
                                     float dist;
                             
@@ -630,7 +605,7 @@ int main(int argc, char **argv){
                       
                         
                         
-                        cout << "selected: " << sel << endl;
+
                     }
                   
                 }

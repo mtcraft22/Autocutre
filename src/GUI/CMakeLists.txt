@@ -7,7 +7,8 @@ add_library(${PROJECT_NAME} SHARED
     
     ${PROJECT_SOURCE_DIR}/Boton.cpp
     ${PROJECT_SOURCE_DIR}/ImageButton.cpp
+
 )
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include/)
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2 )
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2_ttf )

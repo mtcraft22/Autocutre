@@ -7,17 +7,14 @@ GUI::ImageButton::ImageButton(
 		SDL_Texture *img, 
 		int x, int y, 
 		SDL_Color bg, 
-		SDL_Color fg, 
-		std::string text,
+		SDL_Color fg,
 		SDL_Event *e,
 		int gapy , 
 		int gapx 
-	):GUI::Boton(x,y,gapx,gapy,bg,fg,"",e),img(img) 
+	):GUI::Boton(x,y,gapx,gapy,bg,fg,"",e,NULL),img(img) 
 	{
-		SDL_QueryTexture(img,NULL,NULL,&this->w,&this->h);
-		this->click = Callback<ImageButton, class T>();
-		this->hover = Callback<ImageButton, class T>();
-		this->hover_release = Callback<ImageButton, class T>();
+		SDL_QueryTexture(img,nullptr,nullptr,&this->w,&this->h);
+
 	}
 
 void GUI::ImageButton::render(SDL_Renderer * ctx){

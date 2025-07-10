@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26.4)
 set(CMAKE_CXX_COMPILER "/usr/bin/g++-12")
-project(mtcad DESCRIPTION "shapes lib " LANGUAGES CXX)
+project(mtcad DESCRIPTION "shapes lib" LANGUAGES CXX)
 find_package(SDL2 REQUIRED)
 add_library(${PROJECT_NAME} SHARED
     ${PROJECT_SOURCE_DIR}/Rectangle.cpp

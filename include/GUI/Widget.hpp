@@ -1,14 +1,14 @@
 
-#include "mtcad/materials.hpp"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_atomic.h>
 #include <SDL2/SDL_ttf.h>
 
 #include <string>
-#include "GUI/events/callback.hpp"
+#include <GUI/callback.hpp>
 #include <unordered_map>
 #include <utility>
-#include "GUI/events/events.hpp"
+#include <GUI/events.hpp>
 
 namespace GUI {
 
@@ -19,13 +19,11 @@ namespace GUI {
         public:
             virtual void check_status() = 0;
             virtual void render(SDL_Renderer* ctx) = 0;
-            void set_evento(SDL_Event e){
-                this->e = e;
-            };
+            virtual void set_evento(SDL_Event e) = 0;
             template<typename Widget, typename T>
             void set_event(Events_t type, Callback<Widget, T> call){
-  
-                callbacks_table.emplace(std::pair<Events_t, callback*>(type,new Callback(call)));
+  				auto c = new Callback(call);
+                callbacks_table.emplace(std::pair<Events_t, callback*>(type,c));
             }
 			callback* get_event (Events_t event_type){
 				callback* event = this->callbacks_table[event_type];
