@@ -13,11 +13,15 @@
 */
 
 #include "GUI/Boton.hpp"
+#include "GUI/TabPage.hpp"
+#include "GUI/TabContainer.hpp"
+#include "GUI/events.hpp"
 #include "mtcad/arc.hpp"
 #include "GUI/ImageButton.hpp"
 #include "GUI/callback.hpp"
 #include "mtcad/materials.hpp"
 
+#include <SDL2/SDL_ttf.h>
 #include <mtcad/mtcad.hpp>
 
 #include <SDL2/SDL.h>
@@ -36,7 +40,7 @@
 
 using namespace std;
 int gridsize = 20 ;
-const int ticksframe = 1000/60;
+const int ticksframe = 1000/30;
 int canvas_y_coord = 0;
 mt_cad::Materials_t curent_material;
 bool creating = false;
@@ -45,8 +49,18 @@ void reset(){
     creating = true;
     button_hit = true;
 }
+void notify(GUI::TabPage &target,int& x){
+    cout << "hola se añadió" << endl;
+    x = 90;
+}
 std::vector<GUI::ImageButton *> butons ;
-
+class hola{
+public:
+    hola(){}
+    ~hola(){}
+protected:
+private:
+};
 void click(GUI::ImageButton &target,mt_cad::materials& userdata){
 
     int gapy, gapx;
@@ -95,6 +109,7 @@ int main(int argc, char **argv){
         std::cout << SDL_GetError() << std::endl;
         return -1;
     }
+    TTF_Init();
     SDL_Window * window = SDL_CreateWindow("Autocutre", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
     SDL_Renderer * ctx = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
     int psw , psh;
@@ -108,6 +123,7 @@ int main(int argc, char **argv){
             ideal = canvas_y_coord + i;
         }
     }
+    hola hola;
     SDL_Texture * gui = SDL_CreateTexture(ctx,SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,sw, ideal);
     Uint32 * pixels;
     int pitch;
@@ -137,7 +153,7 @@ int main(int argc, char **argv){
     for (int y = 0; y<ideal; y++){
         for (int x = 0; x<sw; x++) {
     
-                pixels2[y*sw+x] = 0x0000aa0f;
+                pixels2[y*sw+x] = 0x0099000f;
             
             
         }
@@ -157,7 +173,7 @@ int main(int argc, char **argv){
     mt_cad::Node n2 = {200,200,XY};
     mt_cad::Node n3 = {300,300,X};
     mt_cad::Node n4 = {100,200,X};
-    shapes.push_back(new mt_cad::Arc({n,n2,n3,n4}));
+    shapes.push_back(new mt_cad::Arc({n,n2,n3,n4,n4}));
     
 
     SDL_Event e;
@@ -178,7 +194,7 @@ int main(int argc, char **argv){
 	butons.push_back(&circlebuton);
     GUI::ImageButton rectanglebuton = GUI::ImageButton(rectangletext,160,10,c,c,&e);
 	butons.push_back(&rectanglebuton);
-    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,210,10,c,c,&e);
+    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,10,10,c,c,&e);
 	butons.push_back(&trianglebuton);
     GUI::ImageButton ellipsebuton   = GUI::ImageButton(elipsetext,260,10,c,c,&e);
 	butons.push_back(&ellipsebuton);
@@ -200,9 +216,24 @@ int main(int argc, char **argv){
 	auto line_qua = mt_cad::materials::QUADRATIC;
 	quadraticbuton.set_event(GUI::Events_t::CLICK,GUI::Callback(&line_qua, click));
 
-
+ 
     std::vector<mt_cad::Node> nodes_new_shape;
     int offx , offy;
+    cout << "hola" << endl;
+    GUI::TabPage pagina = GUI::TabPage("Hola",{0,100,200,100});
+    GUI::TabPage pagina2 = GUI::TabPage("adios",{0,100,200,100});
+      GUI::TabPage pagina23 = GUI::TabPage("culo",{0,100,200,100});
+    int x = 0;
+    
+
+    pagina.add_child(trianglebuton);
+    pagina2.add_child(linebuton);
+
+    GUI::TabContainer cont ;
+    cont.append(&pagina);
+    cont.append(&pagina2);
+    cont.append(&pagina23);
+    cout << "exito" << endl;
 	while (run) {
         
         start = SDL_GetTicks();
@@ -714,20 +745,22 @@ int main(int argc, char **argv){
             for (int y = 0; y<ideal; y++){
                 for (int x = 0; x<sw; x++) {
             
-                        pixels2[y*sw+x] = 0x0000aa0f;
+                        pixels2[y*sw+x] = 0x0099000f;
                     
                     
                 }
             }
             SDL_UnlockTexture(gui);
             SDL_RenderCopy(ctx, gui, NULL, &dest2);
-            linebuton.render(ctx);
+           // linebuton.render(ctx);
             curvebuton.render(ctx);
             circlebuton.render(ctx);
-            trianglebuton.render(ctx);
+          //  trianglebuton.render(ctx);
             rectanglebuton.render(ctx);
             ellipsebuton.render(ctx);
             quadraticbuton.render(ctx);
+            cont.render(ctx);
+           // pagina.render(ctx);
             SDL_RenderPresent(ctx);
             
             

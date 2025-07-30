@@ -1,5 +1,8 @@
+#include "GUI/Boton.hpp"
+#include "GUI/Widget.hpp"
 #include <GUI/ImageButton.hpp>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 #include <iostream>
 #include <ostream>
 
@@ -13,13 +16,15 @@ GUI::ImageButton::ImageButton(
 		int gapx 
 	):GUI::Boton(x,y,gapx,gapy,bg,fg,"",e,NULL),img(img) 
 	{
-		SDL_QueryTexture(img,nullptr,nullptr,&this->w,&this->h);
+		SDL_QueryTexture(img,nullptr,nullptr,&this->box.w,&this->box.h);
 
 	}
 
 void GUI::ImageButton::render(SDL_Renderer * ctx){
-
+	 GUI::Widget::render(ctx);
 	int w, h;
+ 	this->x = this->box.x;
+	this->y = this->box.y; 
 	SDL_QueryTexture(this->img, NULL, NULL, &w, &h);
 
 	SDL_Rect aux = { this->x ,this->y,w + (this->gapX ),h + (this->gapY) };

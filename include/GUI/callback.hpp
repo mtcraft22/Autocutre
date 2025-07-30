@@ -28,7 +28,10 @@ namespace GUI {
                 this->userdata = userdata;
                 this->call = call;
             }
-
+            Callback(T userdata,void (*call)(Widget& bot , T userdata)){
+                this->userdata = userdata;
+                this->call = call;
+            }
 
             void set_buton(Widget& button) {
                 this->button = &button;
@@ -45,8 +48,8 @@ namespace GUI {
                 }
             }
 
-            void set_callback(void (*call)(Widget& bot , T& userdata)){
-                this->call = call;
-            }
+        void set_callback(void (*call)(Widget& bot , T& userdata)){
+            this->call = call;
+        }
     };
 }

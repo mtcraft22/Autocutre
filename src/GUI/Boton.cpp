@@ -1,3 +1,4 @@
+#include "GUI/Widget.hpp"
 #include <GUI/Boton.hpp>
 #include <GUI/callback.hpp>
 #include <SDL2/SDL_events.h>
@@ -34,51 +35,14 @@ GUI::Boton::Boton(
     this->srccolor = &colortext;
 
 }
-void GUI::Boton::check_status(){
-
-        
-        bool prev = this->hover;
-        this->hover = false;
-        this->pressed = false;
-        this->hover = (this->e.motion.x > this->x && this->e.motion.x < this->x + (this->w + (this->gapX*2))) && (this->e.motion.y > this->y && this->e.motion.y < this->y + (this->h + (this->gapY*2)));
-    
-    
-        if (this->e.type == SDL_MOUSEBUTTONDOWN){
-                this->pressed = this->hover && this->e.button.button == SDL_BUTTON_LEFT ;
-        }
-        if (prev && !hover){
-			      auto call = this->get_event(HOVER_RELEASE);
-			      if(call){
-				        (*call)();
-			      }
-
-            
-        }else{
-
-            if(this->hover && !this->pressed){
-				        auto call = this->get_event(HOVER);
-				        if(call){
-					          (*call)();
-				        }
-            }
-        }
-
-        if(this->pressed){
-			      auto call = this->get_event(CLICK);
-			      //std::cout << call << std::endl;
-			      if(call){
-				        (*call)();
-			      }
-        }
-    
-    
-    }     
+  
 
     
 void GUI::Boton::set_evento(SDL_Event e) {
-	this->e = e;
+	this->GUI::Widget::e = e;
 	this->check_status();
 }
+
 void GUI::Boton::Boton::getGap(int& gapX, int& gapY)
 {
     gapX = this->gapX;
@@ -95,7 +59,7 @@ void GUI::Boton::Boton::setGap(int gapX, int gapY)
 
 void GUI::Boton::render(SDL_Renderer* ctx)
 {
-    
+    GUI::Widget::render(ctx);
     SDL_Color bg ={this->bg.r, this->bg.g, this->bg.b, 1};
     SDL_Color fg = {this->fg.r, this->fg.g, this->fg.b, this->fg.a};
     SDL_Surface* txt = TTF_RenderText_Shaded(font, this->text.c_str(), fg, bg);
@@ -104,6 +68,8 @@ void GUI::Boton::render(SDL_Renderer* ctx)
     SDL_QueryTexture(txt_text, NULL, NULL, &w, &h);
     this->w = w;
     this->h = h;
+    this->x = this->box.x;
+    this->y = this->box.y;
     SDL_Rect aux = { this->x ,this->y,w + (this->gapX * 2),h + (this->gapY*2) };
 
     SDL_SetRenderDrawColor(ctx, this->bg.r, this->bg.g, this->bg.b, this->bg.a);

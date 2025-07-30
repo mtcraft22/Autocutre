@@ -17,7 +17,7 @@
 namespace mt_cad {
     class Arc : public mt_cad::Circle{
         public:
-            int angle_pos = 0;
+            int angle_pos,angle_pos2 = 0;
             static const int max_nodes;
             static const mt_cad::Materials_t material;
             Arc(std::vector<Node> nodes);

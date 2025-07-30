@@ -35,7 +35,7 @@ namespace GUI {
 				TTF_Font * font
 			);
 			void set_evento(SDL_Event e) override;
-			void check_status() override;
+			
 			void render(SDL_Renderer* ctx) override;
 			void getGap(int& gapX, int& gapY);
 			void setGap(int gapX, int gapY);
