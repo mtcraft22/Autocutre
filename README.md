@@ -1,7 +1,6 @@
 # Autocutre
 
-    Autocutre es un programa para representar figuras geometricas en un plano 2d.
-    Puede hacer tareas basicas de manipulación como rotar, crear , eliminar .
+##### Autocutre es un programa para representar figuras geometricas en un plano 2d.<br>Puede hacer tareas basicas de manipulación como rotar, crear , eliminar .
 
 # Requisitos
 
@@ -38,4 +37,5 @@
 
 6. Ejecutar:
     En el directorio build/src
+   
     ``` ./Autocutre```
