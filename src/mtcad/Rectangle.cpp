@@ -11,6 +11,9 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "mtcad/materials.hpp"
 #include <mtcad/Node.hpp>
 #include <mtcad/Shape.hpp>

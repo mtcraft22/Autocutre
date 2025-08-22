@@ -4,22 +4,26 @@
 #include <SDL2/SDL_atomic.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <cstdlib>
 #include <iostream>
-#include <iterator>
+
+#include <map>
 #include <ostream>
+#include <sstream>
+#include <string>
+
 #include <vector>
 #include <GUI/callback.hpp>
 #include <unordered_map>
 #include <utility>
 #include <GUI/events.hpp>
+#include <GUI/properties.hpp>
 
 namespace GUI {
-
-    //creamos classe widgets para la tecnica del polimorfismo
-    //para los contenedores
-   
+    
     class Widget {
         public:
             bool listen_events = false;
@@ -69,7 +73,7 @@ namespace GUI {
                 if(this->pressed){
                     
                         auto call = this->get_event(CLICK);
-                        std::cout << "hola" << " " << this->box.x << std::endl;
+                        
                         if(call){
                                 (*call)();
                         }
@@ -123,15 +127,45 @@ namespace GUI {
             }
             SDL_Rect get_box(){return this->box;}
             void set_box(SDL_Rect box){this->box = box;}
+            std::string get_propertie(Properties prop){
+                return properties[prop];
+            }
+           
+            void set_propertie(Properties prop, std::string value){
+                properties[prop]=value;
+                
+            }
         protected:
          
             SDL_Rect box;
             SDL_Color bg , fg;
             SDL_Event e;
+            std::map<GUI::Properties,std::string> properties;
+            SDL_Color get_color_propertie(Properties prop){
+                return string2color(get_propertie(prop));
+            }
+            SDL_Color string2color(std::string str){
+               Uint8 color[4];
+                
+                std::stringstream ss (str);
+                std::string line;
+                int parse = 0;
+                while (std::getline(ss,line,',')) {
+                    color[parse] = atoi(line.c_str());
+                   
+                    parse++;
+                }
+                
+               // std::cout << std::to_string(colors_str[1])<<std::endl;
+                SDL_Color sdlcolor{color[0],color[1],color[2],color[3]};
+
+               
+                return  sdlcolor;
+            }
         private:
             bool hover, pressed;
             static std::vector<Widget *> widgets;
-           
+         
             std::unordered_map<Events_t,callback*> callbacks_table;
     };
     

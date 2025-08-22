@@ -1,3 +1,6 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "mtcad/materials.hpp"
 #include <mtcad/quadratic_curve.hpp>
 #include <vector>

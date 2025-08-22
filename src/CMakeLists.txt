@@ -5,6 +5,7 @@ find_package(SDL2_image REQUIRED)
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../../include)
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2 )
 target_link_libraries(${PROJECT_NAME} PUBLIC GUI )

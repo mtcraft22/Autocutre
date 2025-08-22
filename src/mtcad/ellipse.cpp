@@ -1,3 +1,6 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "mtcad/Node.hpp"
 #include "mtcad/materials.hpp"
 #include <mtcad/circle.hpp>

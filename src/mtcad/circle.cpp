@@ -11,6 +11,12 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include <SDL2/SDL_stdinc.h>
+#include <iostream>
+#include <ostream>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "mtcad/materials.hpp"
 #include <SDL2/SDL.h>
 #include <mtcad/circle.hpp>
@@ -62,7 +68,9 @@ void mt_cad::Circle::draw(SDL_Renderer *ctx)
     
     prev.x = cos(0)*radius+x1;
     prev.y = sin(0)*radius+y1;
-    for (int i = 1 ; i<= 360; i+=1){
+    int step = (360/SDL_clamp((radius/5)*2, 10, 360));
+    for (int i = 0 ; i<= 360; i+= step){
+        std::cout << step << std::endl;
       
         SDL_RenderDrawLine(ctx, prev.x, prev.y, cos(((float)i/180)*3.1416)*radius+x1,sin(((float)i/180)*3.1416)*radius+y1);
 

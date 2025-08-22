@@ -15,12 +15,14 @@
 #include "GUI/Boton.hpp"
 #include "GUI/TabPage.hpp"
 #include "GUI/TabContainer.hpp"
+#include "GUI/Widget.hpp"
 #include "GUI/events.hpp"
 #include "mtcad/arc.hpp"
 #include "GUI/ImageButton.hpp"
 #include "GUI/callback.hpp"
 #include "mtcad/materials.hpp"
 
+#include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_ttf.h>
 #include <mtcad/mtcad.hpp>
 
@@ -173,7 +175,7 @@ int main(int argc, char **argv){
     mt_cad::Node n2 = {200,200,XY};
     mt_cad::Node n3 = {300,300,X};
     mt_cad::Node n4 = {100,200,X};
-    shapes.push_back(new mt_cad::Arc({n,n2,n3,n4,n4}));
+    //shapes.push_back(new mt_cad::Arc({n,n2,n3,n4,n4}));
     
 
     SDL_Event e;
@@ -219,21 +221,26 @@ int main(int argc, char **argv){
  
     std::vector<mt_cad::Node> nodes_new_shape;
     int offx , offy;
-    cout << "hola" << endl;
-    GUI::TabPage pagina = GUI::TabPage("Hola",{0,100,200,100});
-    GUI::TabPage pagina2 = GUI::TabPage("adios",{0,100,200,100});
-      GUI::TabPage pagina23 = GUI::TabPage("culo",{0,100,200,100});
+ 
+    GUI::TabPage pagina = GUI::TabPage("Heramientas",{0,20,sw,ideal});
+    GUI::TabPage pagina2 = GUI::TabPage("Archivo",{0,20,sw,ideal});
+     
     int x = 0;
     
 
-    pagina.add_child(trianglebuton);
-    pagina2.add_child(linebuton);
+    pagina<<linebuton;
+    pagina<<curvebuton;
+    pagina<<circlebuton;
+    pagina<<rectanglebuton;
+    pagina<<trianglebuton;
+    pagina<<ellipsebuton;
+    pagina<<quadraticbuton;
 
     GUI::TabContainer cont ;
-    cont.append(&pagina);
-    cont.append(&pagina2);
-    cont.append(&pagina23);
-    cout << "exito" << endl;
+    cont<< pagina;
+    cont<< pagina2;
+    cont.set_propertie(GUI::BG_COLOR, "20,0,255,255");
+    cont.set_propertie(GUI::SELECTED_TAB_FG_COLOR, "100,0,100,255");
 	while (run) {
         
         start = SDL_GetTicks();
@@ -752,15 +759,9 @@ int main(int argc, char **argv){
             }
             SDL_UnlockTexture(gui);
             SDL_RenderCopy(ctx, gui, NULL, &dest2);
-           // linebuton.render(ctx);
-            curvebuton.render(ctx);
-            circlebuton.render(ctx);
-          //  trianglebuton.render(ctx);
-            rectanglebuton.render(ctx);
-            ellipsebuton.render(ctx);
-            quadraticbuton.render(ctx);
+       
             cont.render(ctx);
-           // pagina.render(ctx);
+       
             SDL_RenderPresent(ctx);
             
             

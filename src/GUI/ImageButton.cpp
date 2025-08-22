@@ -1,3 +1,6 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "GUI/Boton.hpp"
 #include "GUI/Widget.hpp"
 #include <GUI/ImageButton.hpp>

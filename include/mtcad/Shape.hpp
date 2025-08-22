@@ -20,6 +20,7 @@ namespace mt_cad {
     class Node;
     class Shape{
         public:
+           // Shape(){mt_cad::Shape::shapes.push_back(this);}
             virtual void draw(SDL_Renderer * ctx) = 0;
             virtual bool hover(int x , int y) = 0;
             virtual std::vector<mt_cad::Node> get_points() = 0;
@@ -27,8 +28,12 @@ namespace mt_cad {
             void rotate (int ang , mt_cad::Node axis );
             void rotate(int ang);
             void move(mt_cad::Node axis);
+            //std::vector<mt_cad::Shape *> get_shapes(){return mt_cad::Shape::shapes;};
         protected:
             std::vector<mt_cad::Node> nodes;
+      
+        private:
+            //static std::vector<mt_cad::Shape *> shapes ;
             
             
     };
