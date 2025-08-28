@@ -23,7 +23,13 @@
 #include "mtcad/materials.hpp"
 
 #include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_filesystem.h>
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_video.h>
+#include <cstdio>
+#include <fstream>
 #include <mtcad/mtcad.hpp>
 
 #include <SDL2/SDL.h>
@@ -37,6 +43,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 
@@ -175,7 +182,7 @@ int main(int argc, char **argv){
     mt_cad::Node n2 = {200,200,XY};
     mt_cad::Node n3 = {300,300,X};
     mt_cad::Node n4 = {100,200,X};
-    //shapes.push_back(new mt_cad::Arc({n,n2,n3,n4,n4}));
+    shapes.push_back(new mt_cad::Arc({n,n2,n3,n4,n4}));
     
 
     SDL_Event e;
@@ -196,7 +203,7 @@ int main(int argc, char **argv){
 	butons.push_back(&circlebuton);
     GUI::ImageButton rectanglebuton = GUI::ImageButton(rectangletext,160,10,c,c,&e);
 	butons.push_back(&rectanglebuton);
-    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,10,10,c,c,&e);
+    GUI::ImageButton trianglebuton  = GUI::ImageButton(triangletext,210,10,c,c,&e);
 	butons.push_back(&trianglebuton);
     GUI::ImageButton ellipsebuton   = GUI::ImageButton(elipsetext,260,10,c,c,&e);
 	butons.push_back(&ellipsebuton);
@@ -233,6 +240,7 @@ int main(int argc, char **argv){
     pagina<<circlebuton;
     pagina<<rectanglebuton;
     pagina<<trianglebuton;
+    pagina<<linebuton;
     pagina<<ellipsebuton;
     pagina<<quadraticbuton;
 
@@ -241,13 +249,17 @@ int main(int argc, char **argv){
     cont<< pagina2;
     cont.set_propertie(GUI::BG_COLOR, "20,0,255,255");
     cont.set_propertie(GUI::SELECTED_TAB_FG_COLOR, "100,0,100,255");
+                     fstream save;
+    save.open(string(SDL_GetBasePath())+"/res/saves/caca.ac",ios::out);
+    bool ctr = false;
+    bool saved = false;
 	while (run) {
         
         start = SDL_GetTicks();
         delta = start-end;
         if ( delta > ticksframe){
             end = start;
-            
+            SDL_SetWindowTitle(window, saved?"Autocutre":"Autocutre *");
             SDL_SetRenderDrawColor(ctx, 55, 55, 55,255);
             SDL_RenderClear(ctx);
             SDL_SetRenderDrawColor(ctx,255, 255, 255, 255);
@@ -354,6 +366,7 @@ int main(int argc, char **argv){
                             button_hit  = false;
                             break;
                         case SDLK_DELETE:
+                             saved = false;
                             if (sel >= 0 && shapes.size() >= 0){
                                 delete shapes.at(sel);
                                 shapes.erase(shapes.begin() + sel);
@@ -362,7 +375,7 @@ int main(int argc, char **argv){
                             }
                             break;
                         case SDLK_e:
-
+                             saved = false;
                             if (shapes.size()>0 && sel > -1){
 								nodes = shapes.at(sel)->get_points();
                                 for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
@@ -390,8 +403,22 @@ int main(int argc, char **argv){
                                 shapes.at(sel)->set_points(nodes,true);
                             }
                             break;
+                        case SDLK_LCTRL:
+                            cout << "se tensa" << endl;
+                            ctr = true;
+                           
+                            break;
+                        case SDLK_s:
+                            if(ctr){
+                                for (auto s : shapes){
+                                    
+                                    save << *s;
+                                }
+                                saved = true;
+                            }
+                            break;
                         case SDLK_q:
-
+                            saved = false;
                             if ((!shapes.empty()) && (sel > -1)){
 								nodes = shapes.at(sel)->get_points();
                                 for (int i = 1 ; i< shapes.at(sel)->get_points().size(); i++){
@@ -427,6 +454,13 @@ int main(int argc, char **argv){
                     
                     
                 }
+                if (e.type == SDL_KEYUP){
+                    if(e.key.keysym.sym == SDLK_LCTRL){
+                        ctr = false;
+                        
+
+                    }
+                }
                 if (e.type == SDL_MOUSEWHEEL){
                    // int pmx = mx ;
                     //int pmy = my ;
@@ -445,10 +479,10 @@ int main(int argc, char **argv){
                     
                 }
                 if(e.type == SDL_MOUSEBUTTONDOWN){
-                  
+                    
                     press = true;
                     if (creating){
-                        
+                         saved = false;
                         
                         switch (curent_material) {
                       
@@ -470,6 +504,7 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                 
                                 }
                                 break;
                             case mt_cad::CURVE:
@@ -489,6 +524,7 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                    
                                 }
                                 break;
                             case mt_cad::QUADRATIC:
@@ -508,6 +544,8 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                     
+                                  
                                 }
                                 break;
                             case mt_cad::CIRCLE:
@@ -524,10 +562,16 @@ int main(int argc, char **argv){
                                     shapes.push_back(Circle);
                                     creating = false;
                                     nodes_new_shape.clear();
+                   
+                                    
+                                    
+                                
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                     
                                 }
+
                                 break;
                             case mt_cad::TRIANGLE:
                                 if (nodes_new_shape.size() < mt_cad::Triangle::max_nodes){
@@ -546,6 +590,7 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                     
                                 }
                                 
                                 break;
@@ -566,6 +611,7 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                     
                                 }
                                 break;
                             case mt_cad::ELLIPSE:
@@ -585,11 +631,13 @@ int main(int argc, char **argv){
 									for (auto b: butons) {
 										b->setGap(0,0);
 									}
+                                   
                                 }
                                 break;
                             case mt_cad::ARC:
                               break;
                             }
+
                     }
                     if(!draggin){
                         bool des = false;
@@ -657,6 +705,7 @@ int main(int argc, char **argv){
                     my = e.motion.y;
                     
                     if (draggin ){
+                         saved = false;
                         if (sel < 0 && shapes.size()){
                         
                            offy += e.motion.yrel;
@@ -780,6 +829,7 @@ int main(int argc, char **argv){
     SDL_DestroyTexture(elipsetext);
     SDL_DestroyTexture(quadratictext);
     SDL_DestroyRenderer(ctx);
+    save.close();
     for (auto &s  : shapes){
         delete s;
     }

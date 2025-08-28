@@ -23,6 +23,9 @@
 
 const mt_cad::Materials_t mt_cad::Line::material = LINE;
 const int mt_cad::Line::max_nodes = 2;
+mt_cad::Materials_t mt_cad::Line::get_material(){
+    return material ;
+}
 mt_cad::Line::Line(std::vector<mt_cad::Node> nodes){
     if (nodes.size() >= this->max_nodes){
         float x0,y0,x1,y1;

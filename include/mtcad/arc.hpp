@@ -12,6 +12,7 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 #pragma once 
+#include "mtcad/materials.hpp"
 #include <mtcad/mtcad.hpp>
 
 namespace mt_cad {
@@ -22,6 +23,7 @@ namespace mt_cad {
             static const mt_cad::Materials_t material;
             Arc(std::vector<Node> nodes);
             void draw(SDL_Renderer * ctx) override;
+            Materials_t get_material() override;
             bool hover(int x , int y)override;
     };
 } 

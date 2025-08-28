@@ -11,6 +11,7 @@
     See the GNU General Public License for more details.
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
+#include "mtcad/line.hpp"
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -25,7 +26,9 @@
 
 const mt_cad::Materials_t mt_cad::Triangle::material = TRIANGLE;
 const int mt_cad::Triangle::max_nodes = 3;
-
+mt_cad::Materials_t mt_cad::Triangle::get_material(){
+    return material ;
+}
 mt_cad::Triangle::Triangle(std::vector<mt_cad::Node> nodes){
     if (nodes.size()>=this->max_nodes){
         float x0,y0,x1,y1,x2,y2;

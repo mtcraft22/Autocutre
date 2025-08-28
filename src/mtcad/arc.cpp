@@ -12,6 +12,7 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 
+#include "mtcad/arc.hpp"
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -22,7 +23,9 @@
 
 const mt_cad::Materials_t mt_cad::Arc::material = mt_cad::materials::ARC;
 const int mt_cad::Arc::max_nodes = 5;
-
+mt_cad::Materials_t mt_cad::Arc::get_material(){
+    return material ;
+}
 mt_cad::Arc::Arc(std::vector<mt_cad::Node> nodes):mt_cad::Circle(nodes){
      if (nodes.size()>=this->max_nodes){
         float x,y;

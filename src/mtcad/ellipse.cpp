@@ -10,7 +10,9 @@
 
 const mt_cad::Materials_t mt_cad::Ellipse::material = mt_cad::ELLIPSE;
 const int mt_cad::Ellipse::max_nodes = 3;
-
+mt_cad::Materials_t mt_cad::Ellipse::get_material(){
+    return material ;
+}
 mt_cad::Ellipse::Ellipse(std::vector<mt_cad::Node> nodes):mt_cad::Circle(nodes){
      if (nodes.size()>=this->max_nodes){
         float x,y;

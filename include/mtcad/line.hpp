@@ -23,6 +23,7 @@ namespace mt_cad {
         public:
             Line(std::vector<mt_cad::Node> nodes);
             void draw(SDL_Renderer * txt) override;
+            Materials_t get_material() override;
             bool hover(int x , int y) override;
             std::vector<mt_cad::Node> get_points() override ;
             void set_points(std::vector<mt_cad::Node> nodes , bool make_center) override ;

@@ -12,7 +12,9 @@
     You should have received a copy of the GNU General Public License along with Bezier. If not, see <https://www.gnu.org/licenses/>. 
 */
 #include <SDL2/SDL_stdinc.h>
+#include <fstream>
 #include <iostream>
+#include <iterator>
 #include <ostream>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -28,6 +30,9 @@
 
 const mt_cad::Materials_t mt_cad::Circle::material = mt_cad::CIRCLE;
 const int mt_cad::Circle::max_nodes = 2;
+mt_cad::Materials_t mt_cad::Circle::get_material(){
+    return material ;
+}
 mt_cad::Circle::Circle(std::vector<Node> nodes){
 
     if (nodes.size()>=this->max_nodes){
@@ -68,14 +73,14 @@ void mt_cad::Circle::draw(SDL_Renderer *ctx)
     
     prev.x = cos(0)*radius+x1;
     prev.y = sin(0)*radius+y1;
-    int step = (360/SDL_clamp((radius/5)*2, 10, 360));
-    for (int i = 0 ; i<= 360; i+= step){
-        std::cout << step << std::endl;
+   
+    for (int i = 0 ; i<= 360; i+=2){
+        
       
         SDL_RenderDrawLine(ctx, prev.x, prev.y, cos(((float)i/180)*3.1416)*radius+x1,sin(((float)i/180)*3.1416)*radius+y1);
 
         prev.x = cos(((float)i/180)*3.1416)*radius+x1;
-        prev.y = sin(((float)i/180)*3.1416)*radius+y1;
+        prev.y = sin(((float)i/180)*3.1416)*radius+y1; 
     }
    
 }

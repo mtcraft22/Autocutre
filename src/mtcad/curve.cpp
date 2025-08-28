@@ -37,6 +37,9 @@ but no special treatment is needed; simply put t in the function call.
 
 const mt_cad::Materials_t mt_cad::Curve::material = mt_cad::CURVE;
 const int mt_cad::Curve::max_nodes = 3;
+mt_cad::Materials_t mt_cad::Curve::get_material(){
+    return material ;
+}
 mt_cad::Curve::Curve(std::vector<mt_cad::Node> points  ){
 
     if (points.size()>=this->max_nodes){

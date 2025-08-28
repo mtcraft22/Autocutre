@@ -24,6 +24,7 @@ namespace mt_cad {
         public:
             
             Curve (std::vector<mt_cad::Node> points );
+            Materials_t get_material() override;
             void draw(SDL_Renderer * ctx) override;
             bool hover(int x , int y)override ;
             std::vector<mt_cad::Node> get_points() override;

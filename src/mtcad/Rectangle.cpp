@@ -28,7 +28,9 @@
 
 const mt_cad::Materials_t mt_cad::Rectangle::material = RECTANGLE;
 const int mt_cad::Rectangle::max_nodes = 2;
-
+mt_cad::Materials_t mt_cad::Rectangle::get_material(){
+    return material ;
+}
 mt_cad::Rectangle::Rectangle(std::vector<mt_cad::Node> nodes){
     
     if (nodes.size() == 2){

@@ -22,6 +22,7 @@ namespace mt_cad {
             Rectangle(std::vector<mt_cad::Node> nodes);
             void draw(SDL_Renderer * ctx)override ;
             bool hover(int x , int y)override ;
+            Materials_t get_material() override;
             std::vector<mt_cad::Node> get_points() override;
             void set_points(std::vector<mt_cad::Node> nodes, bool make_center)override ;
             static const int max_nodes;
